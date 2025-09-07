@@ -63,9 +63,9 @@ class RegisteredUserController extends Controller
             case 2: // Entrenador
                 return redirect()->route('coach.dashboard');
             case 3: // Jugador
-                return redirect()->route('player.dashboard');
+                return redirect()->route('jugador.principal');
             default:
-                return redirect()->route('home');
+                return redirect()->route('landinpage');
         }
     }
 }

@@ -14,9 +14,18 @@ class ProfileController extends Controller
     // Mostrar formulario
     public function edit()
     {
-        return view('admin.modificarPerfil', [
-            'user' => Auth::user(),
-        ]);
+        $user = Auth::user();
+
+        if ($user->fk_role_id == 1) { // Admin
+            return view('admin.modificarPerfil', compact('user'));
+        } elseif ($user->fk_role_id == 2) { // Entrenador
+            return view('entrenador.modificarPerfil', compact('user'));
+        } elseif ($user->fk_role_id == 3) { // Jugador
+            return view('jugador.modificarPerfil', compact('user'));
+        }
+
+        // Si el rol no se reconoce, redirigir a una página de error o por defecto
+        return abort(403, 'Acceso no autorizado.');
     }
 
     // Actualizar perfil
@@ -59,8 +68,7 @@ class ProfileController extends Controller
 
         $user->save();
 
-        return Redirect::route('admin.profile.edit')
-            ->with('status', 'Perfil actualizado correctamente');
+        return back()->with('status', 'Perfil actualizado correctamente');
     }
 
 

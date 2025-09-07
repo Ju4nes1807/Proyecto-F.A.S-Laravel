@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="imagenes/Logo.png" type="image/x-icon" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <title>Mis Torneos - Jugador</title>
+  </head>
+  <body class="d-flex flex-column min-vh-100">
+
+    <!-- NAVBAR -->
+    <div class="navbar navbar-expand bg-primary shadow mb-4">
+      <a href="principal.html">
+        <img src="imagenes/Logo.png" alt="Logo" class="img-fluid me-2" style="width: 75px; height: 75px" />
+      </a>
+      <p class="navbar-brand text-light fs-2">F.A.S</p>
+      <div class="collapse navbar-collapse" id="navNavbarDropdown">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a href="PerfilJugador.html" class="nav-link text-light shadow">Mi Perfil</a>
+          </li>
+          <li class="nav-item">
+            <a href="landinpage.html" class="nav-link text-light shadow">Cerrar Sesión</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- CONTENIDO -->
+    <div class="container-fluid flex-grow-1">
+      <div class="row">
+        <!-- SIDEBAR -->
+        <div class="col-md-3 col-lg-2 sidebar shadow-sm bg-light">
+          <h5 class="mb-3 text-primary">Categorías</h5>
+          <div class="list-group">
+            <a href="principal.html" class="list-group-item list-group-item-action">Inicio</a>
+            <a href="perfil.html" class="list-group-item list-group-item-action">Perfil</a>
+            <a href="entrenamientos.html" class="list-group-item list-group-item-action">Entrenamientos</a>
+            <a href="torneos.html" class="list-group-item list-group-item-action active">Torneos</a>
+            <a href="escuela.html" class="list-group-item list-group-item-action action">Escuela</a>
+          </div>
+        </div>
+
+        <!-- PANEL PRINCIPAL -->
+        <div class="col-md-9 col-lg-10 p-4">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <h2></h2>
+            <form class="d-flex" role="search">
+            </form>
+          </div>
+          <h6>Jugador</h6>
+          <h3 class="mt-3">Torneos Inscritos</h3>
+
+           <!-- Torneo: Torneo Interlocalidades -->
+  <div class="col-md-6 col-lg-4 mb-4">
+    <div class="card border-warning">
+      <div class="card-body bg-light">
+        <h5 class="card-title mb-3">Torneo Interlocalidades</h5>
+        <p><strong>Organizador:</strong> IMRD Bogotá</p>
+        <button class="btn btn-warning btn-sm d-block mx-auto" data-bs-toggle="collapse" data-bs-target="#detallesInter">Ver detalles</button>
+        <div class="collapse mt-3" id="detallesInter">
+          <h6>Fechas de Partidos</h6>
+          <p>No hay partidos programados aún.</p>
+          <h6>Resultados</h6>
+          <p>No hay resultados registrados aún.</p>
+          <h6>Resultado Final</h6>
+          <p>Tercer Lugar (2024)</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+            
+         <!-- Torneo: Copa Juvenil 2025 -->
+  <div class="col-md-6 col-lg-4 mb-4">
+    <div class="card border-warning">
+      <div class="card-body bg-light">
+        <h5 class="card-title mb-3">Copa Juvenil 2025</h5>
+        <p><strong>Organizador:</strong> Asobogotá</p>
+        <button class="btn btn-warning btn-sm d-block mx-auto" data-bs-toggle="collapse" data-bs-target="#detallesCopa">Ver detalles</button>
+        <div class="collapse mt-3" id="detallesCopa">
+          <h6>Fechas de Partidos</h6>
+          <ul>
+            <li>20/06/2025 – Vs. Estrellas del Sur – 3:00 PM – Estadio Kennedy</li>
+            <li>27/06/2025 – Vs. Leones FC – 4:00 PM – Cancha Maracaná</li>
+          </ul>
+          <h6>Resultados</h6>
+          <table class="table table-sm table-striped">
+            <thead>
+              <tr><th>Fecha</th><th>Rival</th><th>Resultado</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>10/06/2025</td><td>Academia Norte</td><td>2 - 1 (Victoria)</td></tr>
+              <tr><td>14/06/2025</td><td>Rayo Bogotá</td><td>1 - 1 (Empate)</td></tr>
+            </tbody>
+          </table>
+          <h6>Resultado Final</h6>
+          <p>Subcampeón</p>
+        </div>
+      </div>
+    </div>
+  </div>
+          
+  </tbody>
+ </table>
+ </div>
+</div>
+
+          
+    <!-- FOOTER -->
+    <footer class="bg-warning py-3 shadow mt-auto">
+      <div class="container d-flex align-items-center">
+        <img src="imagenes/Logo.png" alt="Logo" class="img-fluid me-2" style="width: 75px; height: 75px" />
+        <p class="text-dark m-0">© Football Association System. Todos los derechos reservados</p>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+  <script>
+  function cerrarSesion() {
+    localStorage.removeItem("logueado");
+    window.location.href = "login.html";
+  }
+</script>
+</html>
+

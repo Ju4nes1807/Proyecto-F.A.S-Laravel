@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\EscuelaController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Middleware\CheckRole;
+use App\Http\Controllers\JugadorController;
 
 Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
 
@@ -39,14 +40,15 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/admin/dash_admin', [AdminController::class, 'index'])
             ->name('admin.dash_admin');
     });
-});
 
-Route::middleware(['auth', 'role:Entrenador'])->group(function () {
-    Route::get('/coach/dashboard', fn() => 'Bienvenido Entrenador')->name('coach.dashboard');
-});
+    Route::middleware(['auth', 'role:Entrenador'])->group(function () {
+        Route::get('/coach/dashboard', fn() => 'Bienvenido Entrenador')->name('coach.dashboard');
+    });
 
-Route::middleware(['auth', 'role:Jugador'])->group(function () {
-    Route::get('/player/dashboard', fn() => 'Bienvenido Jugador')->name('player.dashboard');
+    Route::middleware([CheckRole::class . ':3'])->group(function () {
+        Route::get('/jugador/principal', [JugadorController::class, 'index'])
+            ->name('jugador.principal');
+    });
 });
 
 Route::middleware('guest')->group(function () {
@@ -58,12 +60,16 @@ Route::middleware('guest')->group(function () {
     Route::post('inicioSesion', [AuthenticatedSessionController::class, 'store']);
 });
 
-Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
 
-    // Rutas para la edición del perfil de administrador
-    Route::get('/modificarPerfil', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::put('/modificarPerfil', [ProfileController::class, 'update'])->name('profile.update');
+Route::middleware(['auth', 'role:1'])->group(function () {
+    Route::get('/admin/modificarPerfil', [ProfileController::class, 'edit'])->name('admin.perfil.edit');
+    Route::put('/admin/modificarPerfil', [ProfileController::class, 'update'])->name('admin.perfil.update');
+});
 
+Route::middleware(['auth', 'role:3'])->group(function () {
+    Route::get('/jugador/modificarPerfil', [ProfileController::class, 'edit'])->name('jugador.perfil.edit');
+    Route::put('/jugador/modificarPerfil', [ProfileController::class, 'update'])->name('jugador.perfil.update');
+    Route::get('/jugador/perfil', [JugadorController::class, 'mostrarPerfil'])->name('jugador.perfil');
 });
 
 Route::middleware('auth')->group(function () {

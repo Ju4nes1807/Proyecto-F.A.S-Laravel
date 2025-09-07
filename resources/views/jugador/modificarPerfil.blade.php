@@ -19,7 +19,7 @@
         <div class="collapse navbar-collapse" id="navNavbarDropdown">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a href="{{ route('admin.dash_admin') }}" class="nav-link text-light shadow">Regresar</a>
+                    <a href="{{ route('jugador.principal') }}" class="nav-link text-light shadow">Regresar</a>
                 </li>
         </div>
     </div>
@@ -34,7 +34,7 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('admin.perfil.update') }}" method="POST">
+                    <form action="{{ route('jugador.perfil.update') }}" method="POST">
                         @csrf
                         @method('PUT')
 

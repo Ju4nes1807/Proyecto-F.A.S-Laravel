@@ -11,6 +11,7 @@
 </head>
 
 <body class="d-flex flex-column min-vh-100">
+    <!-- Navbar -->
     <div class="navbar navbar-expand bg-primary shadow mb-4">
         <a href="landinpage.html">
             <img src="../Images/Logo.png" alt="Logo" class="img-fluid me-2" style="width: 75px; height: 75px" />
@@ -25,14 +26,16 @@
                     </form>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('admin.profile.edit') }}" class="nav-link text-light shadow">Modificar Perfil</a>
+                    <a href="{{ route('admin.perfil.update') }}" class="nav-link text-light shadow">Modificar Perfil</a>
                 </li>
             </ul>
         </div>
     </div>
 
+    <!-- Contenido -->
     <div class="container-fluid flex-grow-1">
         <div class="row">
+            <!-- Sidebar -->
             <div class="col-12 col-md-3 col-lg-2 sidebar mb-3">
                 <h5 class="mb-3 text-primary">Categorías</h5>
                 <div class="list-group">
@@ -48,170 +51,63 @@
                 </div>
             </div>
 
+            <!-- Sección principal -->
             <div class="col-12 col-md-9 col-lg-10 p-4">
-                <div
-                    class="d-flex flex-column flex-md-row align-items-md-center justify-content-between text-center mb-3">
-                    <h2>Juan</h2>
-                    <form class="d-flex flex-column flex-sm-row ms-md-3 mt-3 mt-md-0" role="search">
+                <div class="d-flex flex-column flex-md-row align-items-center justify-content-md-end mb-3">
+                    <form class="d-flex flex-column flex-sm-row me-md-3 mt-3 mt-md-0"
+                        action="{{ route('escuelas.index') }}" method="GET" role="search">
                         <div class="input-group me-sm-2 mb-2 mb-sm-0" style="width: auto;">
-                            <button class="input-group-text"><i class="fas fa-search"></i></button>
-                            <input class="form-control" type="search" placeholder="Buscar escuela..."
-                                aria-label="Search" />
+                            <button class="input-group-text" type="submit"><i class="fas fa-search"></i></button>
+                            <input class="form-control" type="search" name="q" placeholder="Buscar escuela..."
+                                aria-label="Search" value="{{ request('q') }}" />
                         </div>
+
+                        @if(request()->filled('q'))
+                            <a href="{{ route('escuelas.index') }}" class="btn btn-primary ms-2">Limpiar</a>
+                        @endif
                         <a href="{{ route('escuelas.create') }}"
-                            class="btn btn-warning flex-shrink-0 d-flex align-items-center justify-content-center">
-                            Registar Escuela
+                            class="btn btn-warning flex-shrink-0 d-flex align-items-left justify-content-center ms-2">
+                            Registrar Escuela
                         </a>
                     </form>
                 </div>
-                <h6>Administrador</h6>
+
+                @if(session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ session('error') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                    </div>
+                @endif
+
+                @if(session('success'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                    </div>
+                @endif
+
                 <h3 class="mt-3">Escuelas</h3>
 
                 <div class="row">
-                    <div class="col-12 col-md-6 col-lg-4 mb-4">
-                        <div class="card border-warning">
-                            <div class="card-body text-start">
-                                <h5 class="card-title mb-3">Guerreros Dorados FC</h5>
-                                <p><strong>Telefono:</strong> 3123354854</p>
-                                <p><strong>Localidad: </strong>San Cristobal Sur</p>
-                                <p><strong>Barrio: </strong>Quiroga</p>
-                                <p><strong>Dirección: </strong>Cra. 9 #19 -39 sur</p>
-                                <button type="button"
-                                    class="btn btn-warning px-3 px-5 shadow-sm align-center mx-auto d-block"
-                                    data-bs-toggle="modal" data-bs-target="#consultarEscuela">
-                                    Ver
-                                </button>
+                    @foreach($escuelas as $escuela)
+                        <div class="col-12 col-md-6 col-lg-4 mb-4">
+                            <div class="card border-warning h-100 shadow-sm">
+                                <div class="card-body text-start">
+                                    <h5 class="card-title mb-3">{{ $escuela->nombre }}</h5>
+                                    <p><strong>Teléfono:</strong> {{ $escuela->contacto }}</p>
+                                    <p><strong>Localidad:</strong> {{ $escuela->ubicacion->localidad }}</p>
+                                    <p><strong>Barrio:</strong> {{ $escuela->ubicacion->barrio }}</p>
+                                    <p><strong>Dirección:</strong> {{ $escuela->direccion }}</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="col-12 col-md-6 col-lg-4 mb-4">
-                        <div class="card border-warning">
-                            <div class="card-body text-start">
-                                <h5 class="card-title mb-3">Guerreros Dorados FC</h5>
-                                <p><strong>Telefono:</strong> 3123623227</p>
-                                <p><strong>Localidad: </strong>Kennedy</p>
-                                <p><strong>Barrio: </strong>El Recreo</p>
-                                <p><strong>Dirección: </strong>Calle 22B Sur No. 10 – 38 57</p>
-                                <button type="button"
-                                    class="btn btn-warning px-3 px-5 shadow-sm align-center mx-auto d-block">
-                                    Ver
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-md-6 col-lg-4 mb-4">
-                        <div class="card border-warning">
-                            <div class="card-body text-start">
-                                <h5 class="card-title mb-3">Real Madelena FC</h5>
-                                <p><strong>Telefono:</strong> 3192403690</p>
-                                <p><strong>Localidad: </strong>Ciudad Bolivar</p>
-                                <p><strong>Barrio: </strong>La Madelena</p>
-                                <p><strong>Dirección: </strong>Calle 59 Sur #60-19</p>
-                                <button type="button"
-                                    class="btn btn-warning px-3 px-5 shadow-sm align-center mx-auto d-block">
-                                    Ver
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-md-6 col-lg-4 mb-4">
-                        <div class="card border-warning">
-                            <div class="card-body text-start">
-                                <h5 class="card-title mb-3">San Pablo FC</h5>
-                                <p><strong>Telefono:</strong> 3162954037</p>
-                                <p><strong>Localidad: </strong>Usaquen</p>
-                                <p><strong>Barrio: </strong>San Pablo</p>
-                                <p><strong>Dirección: </strong>Calle 170 No. 8G-31</p>
-                                <button type="button"
-                                    class="btn btn-warning px-3 px-5 shadow-sm align-center mx-auto d-block">
-                                    Ver
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-md-6 col-lg-4 mb-4">
-                        <div class="card border-warning">
-                            <div class="card-body text-start">
-                                <h5 class="card-title mb-3">Alejandro Brand FC</h5>
-                                <p><strong>Telefono:</strong> 031 6151652</p>
-                                <p><strong>Localidad: </strong>Usaquen</p>
-                                <p><strong>Barrio: </strong>Cedritos</p>
-                                <p><strong>Dirección: </strong>Calle 140 #11-58, Local 46</p>
-                                <button type="button"
-                                    class="btn btn-warning px-3 px-5 shadow-sm align-center mx-auto d-block">
-                                    Ver
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="consultarEscuela" tabindex="-1" aria-labelledby="consultarEscuelaInfo"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-warning">
-                    <h5 class="modal-title" id="consultarEscuelaInfo">Guerreros Dorados FC</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                </div>
-                <div class="modal-body">
-                    <h3>Informacion General</h3>
-                    <ul class="list-unstyled">
-                        <li><strong>Localidad: </strong>San Cristobal Sur</li>
-                        <li><strong>Barrio: </strong>Quiroga</li>
-                        <li><strong>Direccion: </strong>Cra. 9 #19 -39 sur</li>
-                        <li><strong>Administrador: </strong>Juan</li>
-                        <li><strong>Max. Usuarios: </strong>30</li>
-                        <p><Strong>Categorias</Strong></p>
-                        <li>Junior</li>
-                        <li>Semi_Junior</li>
-                        <li>Media</li>
-                        <li>Semi-Avanzada</li>
-                        <li>Avanzada</li>
-                    </ul>
-
-                    <h3>Infraestructura</h3>
-                    <ul class="list-unstyled">
-                        <p><strong>Canchas</strong></p>
-                        <li>Cancha 1</li>
-                        <li>Cancha 2</li>
-                        <li><strong>Vestuario: </strong>Si</li>
-                    </ul>
-
-                    <h3>Entrenadores</h3>
-                    <ul class="list-unstyled">
-                        <li>Carlos Jaramillo</li>
-                        <li>Luis Reyes</li>
-                    </ul>
-
-                    <h3>Horarios</h3>
-                    <ul class="list-unstyled">
-                        <li>Lunes a Viernes 7:00 am a 5:00pm</li>
-                        <li>Sabados, Domingos y Festivos: Practicas y entrenamientos especiales</li>
-                    </ul>
-
-                    <h3>Logros</h3>
-                    <ul class="list-unstyled">
-                        <li>Campeones Football Stellar</li>
-                        <li>Subcampeones Copa Estelar</li>
-                    </ul>
-
-                    <h3>Contacto</h3>
-                    <ul class="list-unstyled">
-                        <li><strong>Telefono: </strong>3192403690</li>
-                        <li><strong>Correo Electrónico: </strong>DoradosFC@Gmail.com</li>
-                    </ul>
+                    @endforeach
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Footer -->
     <footer class="bg-warning py-3 shadow mt-auto">
         <div class="container text-start d-flex align-items-center shadow">
             <img src="../Images/Logo.png" alt="Logo" class="img-fluid me-2" style="width: 75px; height: 75px" />

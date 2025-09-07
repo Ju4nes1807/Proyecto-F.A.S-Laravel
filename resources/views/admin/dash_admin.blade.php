@@ -57,7 +57,7 @@
                     </form>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('admin.profile.edit') }}" class="nav-link text-light shadow">Modificar Perfil</a>
+                    <a href="{{ route('admin.perfil.edit') }}" class="nav-link text-light shadow">Modificar Perfil</a>
                 </li>
             </ul>
         </div>
@@ -94,6 +94,13 @@
                 <h2>Bienvenido, {{ auth()->user()->nombres }}</h2>
                 <h6>{{ auth()->user()->rol->tipo ?? 'Sin rol asignado' }}</h6>
                 <p>Aquí podrás ver un resumen de su escuela, torneos y entrenamientos.</p>
+
+                @if (session('success'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                    </div>
+                @endif
 
                 <div class="row mt-4">
                     <div class="col-12 col-md-6 col-lg-4 mb-4">
@@ -149,59 +156,47 @@
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header bg-warning">
-                    <h5 class="modal-title" id="consultarEscuelaTitulo">Guerreros Dorados FC</h5>
+                    <h5 class="modal-title" id="consultarEscuelaTitulo">
+                        {{ auth()->user()->escuelas->first()->nombre ?? 'Sin escuela registrada' }}
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body">
-                    <h3>Informacion General</h3>
-                    <ul class="list-unstyled">
-                        <li><strong>Localidad: </strong>San Cristobal Sur</li>
-                        <li><strong>Barrio: </strong>Quiroga</li>
-                        <li><strong>Direccion: </strong>Cra. 9 #19 -39 sur</li>
-                        <li><strong>Administrador: </strong>Juan</li>
-                        <li><strong>Max. Usuarios: </strong>30</li>
-                        <p><Strong>Categorias</Strong></p>
-                        <li>Junior</li>
-                        <li>Semi_Junior</li>
-                        <li>Media</li>
-                        <li>Semi-Avanzada</li>
-                        <li>Avanzada</li>
-                    </ul>
+                    @if(auth()->user()->escuelas->isNotEmpty())
+                        @php
+                            $escuela = auth()->user()->escuelas->first();
+                        @endphp
 
-                    <h3>Infraestructura</h3>
-                    <ul class="list-unstyled">
-                        <p><strong>Canchas</strong></p>
-                        <li>Cancha 1</li>
-                        <li>Cancha 2</li>
-                        <li><strong>Vestuario: </strong>Si</li>
-                    </ul>
+                        <h3>Información General</h3>
+                        <ul class="list-unstyled">
+                            <li><strong>Localidad: </strong>{{ $escuela->ubicacion->localidad }}</li>
+                            <li><strong>Barrio: </strong>{{ $escuela->ubicacion->barrio }}</li>
+                            <li><strong>Dirección: </strong>{{ $escuela->direccion }}</li>
+                            <li><strong>Administrador: </strong>{{ auth()->user()->nombres }}</li>
+                            <li><strong>Max. Usuarios: </strong>{{ $escuela->max_usuarios ?? 'No definido' }}</li>
+                        </ul>
 
-                    <h3>Entrenadores</h3>
-                    <ul class="list-unstyled">
-                        <li>Carlos Jaramillo</li>
-                        <li>Luis Reyes</li>
-                    </ul>
-
-                    <h3>Horarios</h3>
-                    <ul class="list-unstyled">
-                        <li>Lunes a Viernes 7:00 am a 5:00pm</li>
-                        <li>Sabados, Domingos y Festivos: Practicas y entrenamientos especiales</li>
-                    </ul>
-
-                    <h3>Logros</h3>
-                    <ul class="list-unstyled">
-                        <li>Campeones Football Stellar</li>
-                        <li>Subcampeones Copa Estelar</li>
-                    </ul>
-
-                    <h3>Contacto</h3>
-                    <ul class="list-unstyled">
-                        <li><strong>Telefono: </strong>3192403690</li>
-                        <li><strong>Correo Electrónico: </strong>DoradosFC@Gmail.com</li>
-                    </ul>
+                        <h3>Contacto</h3>
+                        <ul class="list-unstyled">
+                            <li><strong>Teléfono: </strong>{{ $escuela->contacto }}</li>
+                            <li><strong>Correo Electrónico: </strong>{{ $escuela->correo }}</li>
+                        </ul>
+                    @else
+                        <p class="text-muted">No tienes ninguna escuela registrada todavía.</p>
+                    @endif
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">Eliminar escuela</button>
+                    @if(auth()->user()->escuelas->isNotEmpty())
+                        <form action="{{ route('escuelas.destroy', $escuela->id) }}" method="POST"
+                            onsubmit="return confirm('¿Seguro que deseas eliminar esta escuela?')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger">Eliminar escuela</button>
+                        </form>
+                    @endif
+                    @if(isset($escuela))
+                        <a href="{{ route('escuelas.edit', $escuela->id) }}" class="btn btn-primary">Editar</a>
+                    @endif
                 </div>
             </div>
         </div>

@@ -26,6 +26,7 @@ class User extends Authenticatable
         'email',
         'telefono',
         'fk_role_id',
+        'escuela_id',
         'password',
     ];
 
@@ -61,7 +62,19 @@ class User extends Authenticatable
 
     public function escuelas()
     {
-        return $this->hasMany(Escuela::class);
+        return $this->hasMany(Escuela::class, 'user_id'); // Admin dueño
+    }
+
+    // User.php
+    public function escuela()
+    {
+        return $this->belongsTo(Escuela::class, 'escuela_id');
+    }
+
+    // User.php
+    public function asignaciones()
+    {
+        return $this->hasMany(\App\Models\Asignacion::class, 'user_id');
     }
 
 }

@@ -50,7 +50,7 @@
             <a href="{{ route('jugador.perfil') }}" class="list-group-item list-group-item-action">Perfil</a>
             <a href="entrenamientos.html" class="list-group-item list-group-item-action">Entrenamientos</a>
             <a href="torneos.html" class="list-group-item list-group-item-action">Torneos</a>
-            <a href="escuela.html" class="list-group-item list-group-item-action action">Escuela</a>
+            <a href="{{ route('escuelas.index') }}" class="list-group-item list-group-item-action action">Escuela</a>
           </div>
         </aside>
 
@@ -66,7 +66,7 @@
                 <div class="card-body text-center">
                   <h5 class="card-title">Mi Escuela</h5>
                   <p>Información sobre tu escuela.</p>
-                  <a href="escuela.html" class="btn btn-warning btn-sm">Ver Escuela</a>
+                  <a href="{{ route('escuelas.index') }}" class="btn btn-warning btn-sm">Ver Escuela</a>
                 </div>
               </div>
             </div>

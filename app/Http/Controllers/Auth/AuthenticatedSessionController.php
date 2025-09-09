@@ -34,7 +34,7 @@ class AuthenticatedSessionController extends Controller
             case 1: // Administrador
                 return redirect()->route('admin.dash_admin');
             case 2: // Entrenador
-                return redirect()->route('coach.dashboard');
+                return redirect()->route('entrenador.principalEntrenador');
             case 3: // Jugador
                 return redirect()->route('jugador.principal');
             default:

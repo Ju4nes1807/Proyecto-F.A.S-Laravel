@@ -82,7 +82,7 @@
                         Torneos
                     </a>
                     <a href="Canchas.html" class="list-group-item list-group-item-action">Canchas</a>
-                    <a href="Usuarios.html" class="list-group-item list-group-item-action">Usuarios</a>
+                    <a href="{{ route('usuarios.index') }}" class="list-group-item list-group-item-action">Usuarios</a>
                     <a href="Solicitudes.html" class="list-group-item list-group-item-action">
                         Solicitudes
                     </a>

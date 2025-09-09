@@ -25,8 +25,13 @@ class Escuela extends Model
         return $this->belongsTo(Ubicacion::class);
     }
 
-    public function user()
+    public function admin()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id'); // Dueño (admin)
+    }
+
+    public function usuarios()
+    {
+        return $this->hasMany(User::class, 'escuela_id'); // Entrenadores y jugadores asignados
     }
 }

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Log;
+use App\Models\User;
 
 class ProfileController extends Controller
 {
@@ -93,4 +94,51 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+    public function index()
+    {
+        $admin = Auth::user();
+
+        // Traemos jugadores y entrenadores
+        $usuarios = User::with('rol', 'escuela')
+            ->whereIn('fk_role_id', [2, 3]) // 2=entrenador, 3=jugador
+            ->get();
+
+        return view('admin.usuarios', compact('usuarios', 'admin'));
+    }
+
+    public function show($id)
+    {
+        $admin = Auth::user();
+
+        // Solo admins pueden consultar
+        if ($admin->fk_role_id != 1) {
+            abort(403, 'Acceso no autorizado.');
+        }
+
+        $usuario = User::with('rol', 'escuela')->findOrFail($id);
+
+        return view('admin.verUsuario', compact('usuario'));
+    }
+
+    public function eliminarUsuario($id)
+    {
+        $admin = Auth::user();
+
+        if ($admin->fk_role_id != 1) {
+            abort(403, 'Acceso no autorizado.');
+        }
+
+        $usuario = User::findOrFail($id);
+
+        if ($usuario->id == $admin->id) {
+            return back()->with('error', 'No puedes eliminar tu propio usuario.');
+        }
+
+        $usuario->delete();
+
+        return redirect()->route('usuarios.index')->with('success', 'Usuario eliminado correctamente.');
+    }
+
+
 }

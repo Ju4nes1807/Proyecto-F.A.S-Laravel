@@ -7,6 +7,8 @@ use App\Models\Escuela;
 use App\Models\Ubicacion;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+use App\Models\Asignacion;
 
 class EscuelaController extends Controller
 {
@@ -38,8 +40,8 @@ class EscuelaController extends Controller
 
         } elseif ($user->fk_role_id == 3) { // Rol de Jugador
             // El jugador ve solo la información de su escuela
-            $escuelas = [$user->escuela];
-            return view('jugador.escuelas', compact('escuelas'));
+            $escuela = $user->escuela;
+            return view('jugador.escuela', compact('escuela'));
         }
 
         // Para cualquier otro rol, o si no hay un rol definido
@@ -133,4 +135,61 @@ class EscuelaController extends Controller
         $escuela->delete();
         return redirect()->route('admin.dash_admin')->with('success', 'Escuela eliminada correctamente.');
     }
+
+    public function asignarUsuario(Request $request, $id)
+    {
+        $request->validate([
+            'usuario_id' => 'required|exists:users,id',
+        ]);
+
+        $escuela = Escuela::findOrFail($id);
+
+        // Verificar que la escuela pertenece al admin actual
+        if ($escuela->user_id !== auth()->id()) {
+            abort(403, 'No tienes permiso para asignar usuarios a esta escuela.');
+        }
+
+        $usuario = User::findOrFail($request->usuario_id);
+
+        // Solo entrenadores o jugadores
+        if (!in_array($usuario->fk_role_id, [2, 3])) {
+            return back()->with('error', 'Solo se pueden asignar entrenadores o jugadores.');
+        }
+
+        // Guardar asignación en tabla Asignacion
+        \App\Models\Asignacion::create([
+            'user_id' => $usuario->id,
+            'escuela_id' => $escuela->id,
+            'assigned_by' => auth()->id(),
+            'tipo' => $usuario->fk_role_id == 2 ? 'entrenador' : 'jugador',
+        ]);
+
+        // Guardar relación en User (opcional, si quieres mantener escuela_id en el usuario)
+        $usuario->escuela_id = $escuela->id;
+        $usuario->save();
+
+        return back()->with('success', 'Usuario asignado correctamente a la escuela.');
+    }
+
+    public function eliminarAsignacion($id)
+    {
+        // Buscar la asignación por ID
+        $asignacion = Asignacion::findOrFail($id);
+
+        // Verificar que el admin que intenta eliminar sea quien asignó
+        if ($asignacion->assigned_by != Auth::id()) {
+            return back()->with('error', 'Solo el admin que asignó a este usuario puede desasignar.');
+        }
+
+        // Limpiar la escuela del usuario (opcional)
+        $usuario = $asignacion->user;
+        $usuario->escuela_id = null;
+        $usuario->save();
+
+        // Eliminar la asignación
+        $asignacion->delete();
+
+        return back()->with('success', 'Usuario desasignado correctamente.');
+    }
+
 }

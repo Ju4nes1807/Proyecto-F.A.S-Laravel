@@ -18,6 +18,8 @@ class RegisteredUserController extends Controller
     /**
      * Display the registration view.
      */
+
+    private const MAX_LENGTH = 255;
     public function create(): View
     {
         $roles = Rol::all();
@@ -32,11 +34,11 @@ class RegisteredUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'nombres' => ['required', 'string', 'max:255'],
-            'apellidos' => ['required', 'string', 'max:255'],
+            'nombres' => ['required', 'string', 'max:' . self::MAX_LENGTH],
+            'apellidos' => ['required', 'string', 'max:' . self::MAX_LENGTH],
             'documento' => ['required', 'integer', 'unique:users,documento'],
             'fecha_nacimiento' => ['required', 'date'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:' . self::MAX_LENGTH, 'unique:users,email'],
             'telefono' => ['nullable', 'integer'],
             'rol_id' => ['required', 'exists:roles,id'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],

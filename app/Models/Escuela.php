@@ -34,4 +34,15 @@ class Escuela extends Model
     {
         return $this->hasMany(User::class, 'escuela_id'); // Entrenadores y jugadores asignados
     }
+
+    public function categorias()
+    {
+        return $this->belongsToMany(Categoria::class, 'categoria_escuela');
+    }
+
+    public function asignaciones()
+    {
+        return $this->hasMany(Asignacion::class);
+    }
+
 }

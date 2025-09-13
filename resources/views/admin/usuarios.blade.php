@@ -35,15 +35,18 @@
   <main class="container-fluid flex-grow-1">
     <div class="row">
       <!-- SIDEBAR -->
-      <div class="col-md-3 col-lg-2 sidebar">
-        <h5 class="mb-3 text-primary">Categorias</h5>
+      <div class="col-md-3 col-lg-2 sidebar mb-3">
+        <h5 class="mb-3 text-primary">Usuarios</h5>
         <div class="list-group">
-          <a href="Dashboard.html" class="list-group-item list-group-item-action">Inicio</a>
-          <a href="Escuelas.html" class="list-group-item list-group-item-action">Escuelas</a>
+          <a href="{{ route('admin.dash_admin') }}" class="list-group-item list-group-item-action">Inicio</a>
+          <a href="{{ route('escuelas.index') }}" class="list-group-item list-group-item-action">Escuelas</a>
           <a href="Entrenamientos.html" class="list-group-item list-group-item-action">Entrenamientos</a>
           <a href="Torneos.html" class="list-group-item list-group-item-action">Torneos</a>
+          <a href="{{ route('categorias.index') }}" class="list-group-item list-group-item-action">
+            Categorias
+          </a>
           <a href="Canchas.html" class="list-group-item list-group-item-action">Canchas</a>
-          <a href="Usuarios.html" class="list-group-item list-group-item-action active">Usuarios</a>
+          <a href="{{ route('usuarios.index') }}" class="list-group-item list-group-item-action active">Usuarios</a>
           <a href="Solicitudes.html" class="list-group-item list-group-item-action">Solicitudes</a>
           <a href="Estadisticas.html" class="list-group-item list-group-item-action">Estadisiticas</a>
         </div>
@@ -105,85 +108,131 @@
                       <th>Email</th>
                       <th>Rol</th>
                       <th>Escuela</th>
-                      <th>Asignar / Quitar Escuela</th>
+                      <th>Asignar / Quitar Escuela y Categoría</th>
                       <th>Mostrar Usuario</th>
                     </tr>
                   </thead>
                   <tbody>
-                    @foreach($usuarios->where('fk_role_id', $role_id) as $usuario)
+                    @foreach($usuarios->where('fk_role_id', $role_id) as $user)
                       @php
-                        $asignacion = $usuario->asignaciones->first() ?? null;
-                        $modalId = $tab . '-' . $usuario->id;
+                        $asignacion = $user->asignaciones->first() ?? null;
+                        $modalId = $tab . '-' . $user->id;
                       @endphp
 
-                      {{-- Mostrar solo si el usuario no está asignado o fue asignado por el admin logueado --}}
-                      @if(!$asignacion || ($asignacion->assigned_by == auth()->id()))
-                        <tr>
-                          <td>{{ $usuario->nombres }} {{ $usuario->apellidos }}</td>
-                          <td>{{ $usuario->email }}</td>
-                          <td>{{ $usuario->rol->tipo }}</td>
-                          <td>{{ $asignacion ? $usuario->escuela->nombre : 'Sin asignar' }}</td>
-                          <td>
-                            <div class="d-flex gap-2">
-                              @if(!$asignacion)
-                                <form action="{{ route('escuelas.asignarUsuario', $admin->escuelas->first()->id) }}"
-                                  method="POST">
+                      <tr>
+                        <td>{{ $user->nombres }} {{ $user->apellidos }}</td>
+                        <td>{{ $user->email }}</td>
+                        <td>{{ $user->rol->tipo }}</td>
+                        <td>{{ $asignacion ? $user->escuela->nombre : 'Sin asignar' }}</td>
+
+                        <td>
+                          <div class="d-flex flex-column gap-2 mb-2">
+
+                            {{-- Botón para asignar escuela (si no tiene) --}}
+                            @if(!$asignacion)
+                              <form action="{{ route('escuelas.asignarUsuario', $admin->escuelas->first()->id) }}"
+                                method="POST">
+                                @csrf
+                                <input type="hidden" name="usuario_id" value="{{ $user->id }}">
+                                <button type="submit" class="btn btn-primary btn-sm">Asignar Escuela</button>
+                              </form>
+                            @endif
+
+                            {{-- Botón para quitar escuela (si ya tiene y fue asignado por este admin) --}}
+                            @if($asignacion && $asignacion->assigned_by == auth()->id())
+                              <form action="{{ route('usuarios.eliminarAsignacion', $asignacion->id) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-warning btn-sm"
+                                  onclick="return confirm('¿Seguro que quieres quitar la asignación de este usuario?')">
+                                  Quitar Escuela
+                                </button>
+                              </form>
+                            @endif
+
+                            {{-- Select para asignar categoría (SOLO jugadores con escuela asignada por este admin) --}}
+                            {{-- Asignar o quitar categoría (SOLO jugadores con escuela asignada por este admin) --}}
+                            @if($user->fk_role_id == 3 && $asignacion && $asignacion->assigned_by == auth()->id())
+
+                              {{-- Si NO tiene categoría, mostrar el select para asignar --}}
+                              @if(!$asignacion->categoria_id)
+                                <form action="{{ route('categorias.asignarUsuario', $user->id) }}" method="POST"
+                                  class="d-flex gap-2">
                                   @csrf
-                                  <input type="hidden" name="usuario_id" value="{{ $usuario->id }}">
-                                  <button type="submit" class="btn btn-primary btn-sm">Asignar</button>
+                                  <select name="categoria_id" class="form-select form-select-sm">
+                                    <option value="">Selecciona categoría</option>
+                                    @foreach($categorias as $categoria)
+                                      <option value="{{ $categoria->id }}">{{ $categoria->nombre }}</option>
+                                    @endforeach
+                                  </select>
+                                  <button type="submit" class="btn btn-primary btn-sm">Asignar Categoría</button>
                                 </form>
-                              @elseif($asignacion->assigned_by == auth()->id())
-                                <form action="{{ route('usuarios.eliminarAsignacion', $asignacion->id) }}" method="POST">
+                              @endif
+
+                              {{-- Si YA tiene categoría, mostrar el botón para quitar --}}
+                              @if($asignacion->categoria_id)
+                                <form action="{{ route('usuarios.eliminarCategoria', $asignacion->id) }}" method="POST"
+                                  onsubmit="return confirm('¿Seguro que quieres quitar la categoría de este jugador?');">
                                   @csrf
                                   @method('DELETE')
-                                  <button type="submit" class="btn btn-warning btn-sm"
-                                    onclick="return confirm('¿Seguro que quieres quitar la asignación de este usuario?')">Quitar</button>
+                                  <button type="submit" class="btn btn-warning btn-sm">Quitar Categoría</button>
+                                </form>
+                              @endif
+
+                            @endif
+                          </div>
+                        </td>
+
+
+                        <td>
+                          <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#{{ $modalId }}">Ver</button>
+                        </td>
+                      </tr>
+
+                      <!-- Modal -->
+                      <div class="modal fade" id="{{ $modalId }}" tabindex="-1" aria-labelledby="{{ $modalId }}Label"
+                        aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                          <div class="modal-content">
+                            <div class="modal-header bg-warning">
+                              <h5 class="modal-title">Información del Usuario</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                            </div>
+                            <div class="modal-body">
+                              <ul class="list-group mb-3">
+                                <li class="list-group-item"><strong>Nombres:</strong> {{ $user->nombres }}</li>
+                                <li class="list-group-item"><strong>Apellidos:</strong> {{ $user->apellidos }}</li>
+                                <li class="list-group-item"><strong>Documento:</strong> {{ $user->documento }}</li>
+                                <li class="list-group-item"><strong>Email:</strong> {{ $user->email }}</li>
+                                <li class="list-group-item"><strong>Teléfono:</strong> {{ $user->telefono }}</li>
+                                <li class="list-group-item"><strong>Edad:</strong>
+                                  {{ \Carbon\Carbon::parse($user->fecha_nacimiento)->age }}</li>
+                                <li class="list-group-item"><strong>Escuela:</strong>
+                                  {{ $asignacion ? $user->escuela->nombre : 'Sin asignar' }}</li>
+                                <li class="list-group-item"><strong>Categoría:</strong>
+                                  @if($user->fk_role_id == 3)
+                                    {{ $asignacion && $asignacion->categoria ? $asignacion->categoria->nombre : 'Sin asignar' }}
+                                  @else
+                                    No aplica
+                                  @endif
+                                </li>
+                              </ul>
+                            </div>
+                            <div class="modal-footer">
+                              @if($asignacion && $asignacion->assigned_by == auth()->id())
+                                <form action="{{ route('usuarios.destroy', $user->id) }}" method="POST"
+                                  onsubmit="return confirm('¿Seguro que deseas eliminar este usuario del sistema?');">
+                                  @csrf
+                                  @method('DELETE')
+                                  <button type="submit" class="btn btn-danger">Eliminar Usuario</button>
                                 </form>
                               @endif
                             </div>
-                          </td>
-                          <td>
-                            <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                              data-bs-target="#{{ $modalId }}">Ver</button>
-                          </td>
-                        </tr>
-
-                        <!-- Modal -->
-                        <div class="modal fade" id="{{ $modalId }}" tabindex="-1" aria-labelledby="{{ $modalId }}Label"
-                          aria-hidden="true">
-                          <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                              <div class="modal-header bg-warning">
-                                <h5 class="modal-title">Información del Usuario</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                              </div>
-                              <div class="modal-body">
-                                <ul class="list-group mb-3">
-                                  <li class="list-group-item"><strong>Nombres:</strong> {{ $usuario->nombres }}</li>
-                                  <li class="list-group-item"><strong>Apellidos:</strong> {{ $usuario->apellidos }}</li>
-                                  <li class="list-group-item"><strong>Documento:</strong> {{ $usuario->documento }}</li>
-                                  <li class="list-group-item"><strong>Email:</strong> {{ $usuario->email }}</li>
-                                  <li class="list-group-item"><strong>Teléfono:</strong> {{ $usuario->telefono }}</li>
-                                  <li class="list-group-item"><strong>Edad:</strong>
-                                    {{ \Carbon\Carbon::parse($usuario->fecha_nacimiento)->age }}</li>
-                                  <li class="list-group-item"><strong>Escuela:</strong>
-                                    {{ $asignacion ? $usuario->escuela->nombre : 'Sin asignar' }}</li>
-                                </ul>
-                              </div>
-                              <div class="modal-footer">
-                                @if(!$asignacion || ($asignacion && $asignacion->assigned_by == auth()->id()))
-                                  <form action="{{ route('usuarios.destroy', $usuario->id) }}" method="POST"
-                                    onsubmit="return confirm('¿Seguro que deseas eliminar este usuario del sistema?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger">Eliminar Usuario</button>
-                                  </form>
-                                @endif
-                              </div>
-                            </div>
                           </div>
                         </div>
-                      @endif
+                      </div>
+
                     @endforeach
                   </tbody>
                 </table>

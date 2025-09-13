@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
-
+use App\Models\Categoria;
 class ProfileController extends Controller
 {
     // Mostrar formulario
@@ -99,13 +99,29 @@ class ProfileController extends Controller
     {
         $admin = Auth::user();
 
+        // Escuelas creadas por este admin
+        $misEscuelas = $admin->escuelas->pluck('id');
+
         // Traemos jugadores y entrenadores
-        $usuarios = User::with('rol', 'escuela')
-            ->whereIn('fk_role_id', [2, 3]) // 2=entrenador, 3=jugador
+        $usuarios = User::with('rol', 'escuela', 'asignaciones.categoria')
+            ->whereIn('fk_role_id', [2, 3])
+            ->where(function ($query) use ($misEscuelas) {
+                $query->whereNull('escuela_id') // usuarios sin escuela
+                    ->orWhereIn('escuela_id', $misEscuelas); // o asignados a mis escuelas
+            })
             ->get();
 
-        return view('admin.usuarios', compact('usuarios', 'admin'));
+        // Categorías asociadas a las escuelas del admin
+        $categorias = collect();
+        if ($admin->fk_role_id == 1) {
+            $categorias = Categoria::whereHas('escuelas', function ($q) use ($admin) {
+                $q->where('user_id', $admin->id);
+            })->with('escuelas')->get();
+        }
+
+        return view('admin.usuarios', compact('usuarios', 'admin', 'categorias'));
     }
+
 
     public function show($id)
     {

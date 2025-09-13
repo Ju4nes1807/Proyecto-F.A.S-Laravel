@@ -37,15 +37,18 @@
         <div class="row">
             <!-- Sidebar -->
             <div class="col-12 col-md-3 col-lg-2 sidebar mb-3">
-                <h5 class="mb-3 text-primary">Categorías</h5>
+                <h5 class="mb-3 text-primary">Escuelas</h5>
                 <div class="list-group">
                     <a href="{{ route('admin.dash_admin') }}" class="list-group-item list-group-item-action">Inicio</a>
                     <a href="{{ route('escuelas.index') }}"
                         class="list-group-item list-group-item-action active">Escuelas</a>
                     <a href="Entrenamientos.html" class="list-group-item list-group-item-action">Entrenamientos</a>
                     <a href="Torneos.html" class="list-group-item list-group-item-action">Torneos</a>
+                    <a href="{{ route('categorias.index') }}" class="list-group-item list-group-item-action">
+                        Categorias
+                    </a>
                     <a href="Canchas.html" class="list-group-item list-group-item-action">Canchas</a>
-                    <a href="Usuarios.html" class="list-group-item list-group-item-action">Usuarios</a>
+                    <a href="{{ route('usuarios.index') }}" class="list-group-item list-group-item-action">Usuarios</a>
                     <a href="Solicitudes.html" class="list-group-item list-group-item-action">Solicitudes</a>
                     <a href="Estadisticas.html" class="list-group-item list-group-item-action">Estadisiticas</a>
                 </div>

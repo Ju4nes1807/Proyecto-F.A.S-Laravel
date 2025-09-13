@@ -77,4 +77,9 @@ class User extends Authenticatable
         return $this->hasMany(\App\Models\Asignacion::class, 'user_id');
     }
 
+    public function categorias()
+    {
+        return $this->hasManyThrough(Categoria::class, Asignacion::class, 'user_id', 'id', 'id', 'categoria_id');
+    }
+
 }

@@ -36,5 +36,10 @@ class Asignacion extends Model
         return $this->belongsTo(Escuela::class, 'escuela_id');
     }
 
+    public function categoria()
+    {
+        return $this->belongsTo(Categoria::class, 'categoria_id');
+    }
+
 }
 ;

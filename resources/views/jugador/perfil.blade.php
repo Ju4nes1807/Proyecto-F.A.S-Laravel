@@ -49,7 +49,7 @@
             <a href="{{ route('jugador.perfil') }}" class="list-group-item list-group-item-action active">Perfil</a>
             <a href="entrenamientos.html" class="list-group-item list-group-item-action">Entrenamientos</a>
             <a href="torneos.html" class="list-group-item list-group-item-action">Torneos</a>
-            <a href="escuela.html" class="list-group-item list-group-item-action">Escuela</a>
+            <a href="{{ route('escuelas.index') }}" class="list-group-item list-group-item-action">Escuela</a>
           </div>
         </div>
 
@@ -63,6 +63,15 @@
             <p><strong>Correo electrónico:</strong> {{ $user->email }}</p>
             <p><strong>Teléfono:</strong> {{ $user->telefono }}</p>
             <p><strong>Fecha de nacimiento:</strong> {{ $user->fecha_nacimiento }}</p>
+            <p><strong>Categoría:</strong>
+              @if($user->fk_role_id == 3)
+                          {{ $user->asignaciones->first() && $user->asignaciones->first()->categoria
+                ? $user->asignaciones->first()->categoria->nombre
+                : 'Sin asignar' }}
+              @else
+                No aplica
+              @endif
+            </p>
           </div>
         </div>
       </div>

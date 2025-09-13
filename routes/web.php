@@ -1,5 +1,4 @@
 <?php
-
 use App\Http\Controllers\EntrenadorController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -10,6 +9,7 @@ use App\Http\Controllers\EscuelaController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Middleware\CheckRole;
 use App\Http\Controllers\JugadorController;
+use App\Http\Controllers\CategoriaController;
 
 Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
 
@@ -90,6 +90,24 @@ Route::middleware('auth')->group(function () {
 
     // Eliminar usuario definitivamente del sistema
     Route::delete('/usuarios/{id}', [ProfileController::class, 'eliminarUsuario'])->name('usuarios.destroy');
+});
+
+Route::middleware(['auth'])->group(function () {
+    // Index de categorías (vista diferente según rol)
+    Route::get('/categorias', [CategoriaController::class, 'index'])->name('categorias.index');
+
+    // CRUD solo para admins
+    Route::middleware(['auth', 'role:1'])->group(function () {
+        Route::get('/categorias/create', [CategoriaController::class, 'create'])->name('categorias.create');
+        Route::post('/categorias', [CategoriaController::class, 'store'])->name('categorias.store');
+        Route::get('/categorias/{categoria}/edit', [CategoriaController::class, 'edit'])->name('categorias.edit');
+        Route::put('/categorias/{categoria}', [CategoriaController::class, 'update'])->name('categorias.update');
+        Route::delete('/categorias/{categoria}', [CategoriaController::class, 'destroy'])->name('categorias.destroy');
+        Route::post('/categorias/usuarios/{user}', [CategoriaController::class, 'asignarUsuario'])
+            ->name('categorias.asignarUsuario');
+        Route::delete('/usuarios/{id}/eliminar-categoria', [CategoriaController::class, 'eliminarCategoria'])
+            ->name('usuarios.eliminarCategoria');
+    });
 });
 
 Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');

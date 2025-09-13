@@ -57,8 +57,6 @@
               <h4 class="card-title text-primary mb-3">{{ $escuela->nombre }}</h4>
               <p><strong>Teléfono:</strong> {{ $escuela->contacto }}</p>
               <p><strong>Correo:</strong> {{ $escuela->correo }}</p>
-              <p><strong>Localidad:</strong> {{ $escuela->localidad ?? 'No registrada' }}</p>
-              <p><strong>Barrio:</strong> {{ $escuela->barrio ?? 'No registrado' }}</p>
               <p><strong>Dirección:</strong> {{ $escuela->direccion }}</p>
               <p><strong>Localidad:</strong> {{ $escuela->ubicacion->localidad ?? 'No definida' }}</p>
               <p><strong>Barrio:</strong> {{ $escuela->ubicacion->barrio ?? 'No definida' }}</p>

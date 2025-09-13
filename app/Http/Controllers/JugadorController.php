@@ -19,6 +19,7 @@ class JugadorController extends Controller
         $user = Auth::user();
 
         // Pasa los datos del usuario a la vista
+        $user = Auth::user()->load('asignaciones.categoria');
         return view('jugador.perfil', compact('user'));
     }
 }

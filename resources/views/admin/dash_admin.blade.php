@@ -66,7 +66,7 @@
     <div class="container-fluid flex-grow-1">
         <div class="row">
             <div class="col-12 col-md-3 col-lg-2 sidebar">
-                <h5 class="mb-3 text-primary">Categorías</h5>
+                <h5 class="mb-3 text-primary">Inicio</h5>
                 <div class="list-group">
                     <a href="{{ route('admin.dash_admin') }}" class="list-group-item list-group-item-action active"
                         aria-current="true">
@@ -80,6 +80,9 @@
                     </a>
                     <a href="Torneos.html" class="list-group-item list-group-item-action">
                         Torneos
+                    </a>
+                    <a href="{{ route('categorias.index') }}" class="list-group-item list-group-item-action">
+                        Categorias
                     </a>
                     <a href="Canchas.html" class="list-group-item list-group-item-action">Canchas</a>
                     <a href="{{ route('usuarios.index') }}" class="list-group-item list-group-item-action">Usuarios</a>
@@ -420,7 +423,7 @@
     </div>
 
 
-    <footer class="bg-warning py-3 shadow mt-auto">
+    <footer class="bg-warning py-3 mt-3 shadow mt-auto">
         <div class="container text-start d-flex align-items-center footer-content shadow"> <img src="../Images/Logo.png"
                 alt="Logo" class="img-fluid me-2" style="width: 75px; height: 75px;">
             <p class="text-dark m-0">© Football Association System. Todos los derechos reservados</p>

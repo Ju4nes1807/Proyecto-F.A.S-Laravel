@@ -11,7 +11,6 @@
 </head>
 
 <body class="d-flex flex-column min-vh-100">
-  <!-- NAVBAR -->
   <div class="navbar navbar-expand bg-primary lg-4 shadow mb-4">
     <a href="landinpage.html">
       <img src="../Images/Logo.png" alt="Logo" class="img-fluid me-2" style="width: 75px; height: 75px;" />
@@ -34,7 +33,6 @@
 
   <main class="container-fluid flex-grow-1">
     <div class="row">
-      <!-- SIDEBAR -->
       <div class="col-md-3 col-lg-2 sidebar mb-3">
         <h5 class="mb-3 text-primary">Usuarios</h5>
         <div class="list-group">
@@ -45,7 +43,7 @@
           <a href="{{ route('categorias.index') }}" class="list-group-item list-group-item-action">
             Categorias
           </a>
-          <a href="Canchas.html" class="list-group-item list-group-item-action">Canchas</a>
+          <a href="{{ route('canchas.index') }}" class="list-group-item list-group-item-action">Canchas</a>
           <a href="{{ route('usuarios.index') }}" class="list-group-item list-group-item-action active">Usuarios</a>
           <a href="Solicitudes.html" class="list-group-item list-group-item-action">Solicitudes</a>
           <a href="Estadisticas.html" class="list-group-item list-group-item-action">Estadisiticas</a>
@@ -53,7 +51,6 @@
       </div>
 
       <div class="col-md-9 col-lg-10 p-4">
-        <!-- Buscador -->
         <div class="d-flex flex-column flex-md-row align-items-center justify-content-md-end mb-3">
           <form class="d-flex flex-column flex-sm-row me-md-3 mt-3 mt-md-0" action="{{ route('usuarios.index') }}"
             method="GET" role="search">
@@ -85,7 +82,6 @@
           </div>
         @endif
 
-        <!-- Tabs -->
         <ul class="nav nav-tabs" id="userTabs" role="tablist">
           <li class="nav-item" role="presentation">
             <button class="nav-link active" id="jugadores-tab" data-bs-toggle="tab" data-bs-target="#jugadores"
@@ -129,14 +125,28 @@
                           <div class="d-flex flex-column gap-2 mb-2">
 
                             {{-- Botón para asignar escuela (si no tiene) --}}
-                            @if(!$asignacion)
-                              <form action="{{ route('escuelas.asignarUsuario', $admin->escuelas->first()->id) }}"
-                                method="POST">
-                                @csrf
-                                <input type="hidden" name="usuario_id" value="{{ $user->id }}">
-                                <button type="submit" class="btn btn-primary btn-sm">Asignar Escuela</button>
-                              </form>
-                            @endif
+                            <div class="d-flex flex-column gap-2 mb-2">
+
+                              {{-- Botón para asignar escuela (si no tiene) --}}
+                              @if(!$asignacion)
+                                @if($admin->escuelas->isNotEmpty())
+                                  <form action="{{ route('escuelas.asignarUsuario', $admin->escuelas->first()->id) }}"
+                                    method="POST">
+                                    @csrf
+                                    <input type="hidden" name="usuario_id" value="{{ $user->id }}">
+                                    <button type="submit" class="btn btn-primary btn-sm">Asignar Escuela</button>
+                                  </form>
+                                @else
+                                  <div class="card bg-light border-warning">
+                                    <div class="card-body p-2 d-flex align-items-center">
+                                      <i class="fas fa-exclamation-circle text-warning me-2"></i>
+                                      <small class="text-secondary">Debes tener una escuela para asignar.</small>
+                                    </div>
+                                  </div>
+                                @endif
+                              @endif
+
+                            </div>
 
                             {{-- Botón para quitar escuela (si ya tiene y fue asignado por este admin) --}}
                             @if($asignacion && $asignacion->assigned_by == auth()->id())
@@ -165,7 +175,8 @@
                                       <option value="{{ $categoria->id }}">{{ $categoria->nombre }}</option>
                                     @endforeach
                                   </select>
-                                  <button type="submit" class="btn btn-primary btn-sm">Asignar Categoría</button>
+                                  <button type="submit" class="btn btn-primary btn-sm">Asignar
+                                    Categoría</button>
                                 </form>
                               @endif
 
@@ -175,7 +186,8 @@
                                   onsubmit="return confirm('¿Seguro que quieres quitar la categoría de este jugador?');">
                                   @csrf
                                   @method('DELETE')
-                                  <button type="submit" class="btn btn-warning btn-sm">Quitar Categoría</button>
+                                  <button type="submit" class="btn btn-warning btn-sm">Quitar
+                                    Categoría</button>
                                 </form>
                               @endif
 
@@ -190,7 +202,6 @@
                         </td>
                       </tr>
 
-                      <!-- Modal -->
                       <div class="modal fade" id="{{ $modalId }}" tabindex="-1" aria-labelledby="{{ $modalId }}Label"
                         aria-hidden="true">
                         <div class="modal-dialog modal-lg">
@@ -225,7 +236,7 @@
                                   onsubmit="return confirm('¿Seguro que deseas eliminar este usuario del sistema?');">
                                   @csrf
                                   @method('DELETE')
-                                  <button type="submit" class="btn btn-danger">Eliminar Usuario</button>
+                                  <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i></button>
                                 </form>
                               @endif
                             </div>

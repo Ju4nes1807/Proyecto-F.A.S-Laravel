@@ -13,7 +13,7 @@
 <body class="d-flex flex-column min-vh-100">
     <!-- Navbar -->
     <div class="navbar navbar-expand bg-primary shadow mb-4">
-        <a href="landinpage.html">
+        <a href="{{ route('landinpage') }}">
             <img src="../Images/Logo.png" alt="Logo" class="img-fluid me-2" style="width: 75px; height: 75px" />
         </a>
         <p class="navbar-brand text-light fs-2 shadow">F.A.S</p>
@@ -47,7 +47,7 @@
                     <a href="{{ route('categorias.index') }}" class="list-group-item list-group-item-action">
                         Categorias
                     </a>
-                    <a href="Canchas.html" class="list-group-item list-group-item-action">Canchas</a>
+                    <a href="{{ route('canchas.index') }}" class="list-group-item list-group-item-action">Canchas</a>
                     <a href="{{ route('usuarios.index') }}" class="list-group-item list-group-item-action">Usuarios</a>
                     <a href="Solicitudes.html" class="list-group-item list-group-item-action">Solicitudes</a>
                     <a href="Estadisticas.html" class="list-group-item list-group-item-action">Estadisiticas</a>

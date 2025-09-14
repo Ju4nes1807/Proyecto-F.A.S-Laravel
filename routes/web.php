@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Middleware\CheckRole;
 use App\Http\Controllers\JugadorController;
 use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\CanchaController;
 
 Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
 
@@ -108,6 +109,19 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/usuarios/{id}/eliminar-categoria', [CategoriaController::class, 'eliminarCategoria'])
             ->name('usuarios.eliminarCategoria');
     });
+});
+//Rutas canchas
+Route::get('/canchas', [CanchaController::class, 'index'])
+    ->name('canchas.index')
+    ->middleware('auth');
+//Rutas solo para admins
+Route::middleware(['auth', 'role:1'])->group(function () {
+    Route::get('/admin/dash_admin', [CanchaController::class, 'dash_admin'])->name('admin.dash_admin');
+    Route::get('/canchas/create', [CanchaController::class, 'create'])->name('canchas.create');
+    Route::post('/canchas', [CanchaController::class, 'store'])->name('canchas.store');
+    Route::get('/canchas/{id}/edit', [CanchaController::class, 'edit'])->name('canchas.edit');
+    Route::put('/canchas/{id}', [CanchaController::class, 'update'])->name('canchas.update');
+    Route::delete('/canchas/{id}', [CanchaController::class, 'destroy'])->name('canchas.destroy');
 });
 
 Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');

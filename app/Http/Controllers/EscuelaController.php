@@ -132,6 +132,10 @@ class EscuelaController extends Controller
             abort(403, 'No tienes permiso para eliminar esta escuela.');
         }
 
+        $escuela->categorias()->get()->each(function ($categoria) {
+            $categoria->delete();
+        });
+
         $escuela->delete();
         return redirect()->route('admin.dash_admin')->with('success', 'Escuela eliminada correctamente.');
     }

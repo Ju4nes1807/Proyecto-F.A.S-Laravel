@@ -84,7 +84,7 @@
                     <a href="{{ route('categorias.index') }}" class="list-group-item list-group-item-action">
                         Categorias
                     </a>
-                    <a href="Canchas.html" class="list-group-item list-group-item-action">Canchas</a>
+                    <a href="{{ route('canchas.index') }}" class="list-group-item list-group-item-action">Canchas</a>
                     <a href="{{ route('usuarios.index') }}" class="list-group-item list-group-item-action">Usuarios</a>
                     <a href="Solicitudes.html" class="list-group-item list-group-item-action">
                         Solicitudes
@@ -194,11 +194,12 @@
                             onsubmit="return confirm('¿Seguro que deseas eliminar esta escuela?')">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-danger">Eliminar escuela</button>
+                            <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i></button>
                         </form>
                     @endif
                     @if(isset($escuela))
-                        <a href="{{ route('escuelas.edit', $escuela->id) }}" class="btn btn-primary">Editar</a>
+                        <a href="{{ route('escuelas.edit', $escuela->id) }}" class="btn btn-primary"><i
+                                class="fas fa-edit"></i></a>
                     @endif
                 </div>
             </div>
@@ -256,59 +257,86 @@
         </div>
     </div>
 
-    <div class="modal fade" id="consultarCanchas" tabindex="-1" aria-labelledby="consultarCachasLabel"
+    <div class="modal fade" id="consultarCanchas" tabindex="-1" aria-labelledby="consultarCanchasLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content">
                 <div class="modal-header bg-warning">
-                    <h5 class="modal-title" id="consultarCanchasLabel">Canchas</h5>
+                    <h5 class="modal-title" id="consultarCanchasLabel">Mis Canchas</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body">
-                    <h3>Informacion General</h3>
+                    <h3>Información General</h3>
+
                     <div class="table-responsive">
                         <table class="table table-hover table-striped">
                             <thead>
                                 <tr>
                                     <th scope="col">Nombre</th>
                                     <th scope="col">Tipo</th>
-                                    <th scope="col">Estado</th>
                                     <th scope="col">Descripcion</th>
                                     <th scope="col">Direccion</th>
+                                    <th scope="col">Localidad</th>
+                                    <th scope="col">Barrio</th>
+                                    <th scope="col">Estado</th>
+                                    <th scope="col">Escuela</th>
+                                    @if(Auth::user()->fk_role_id == 1)
+                                        <th scope="col">Acciones</th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>Cancha 1</td>
-                                    <td>Futbol 11</td>
-                                    <td>Disponible</td>
-                                    <td>Cancha de futbol 11 con grama natural</td>
-                                    <td>Calle 123 #45-67</td>
-                                </tr>
-                                <tr>
-                                    <td>Cancha 2</td>
-                                    <td>Futbol 5</td>
-                                    <td>No Disponible</td>
-                                    <td>Cancha de futbol 5 con grama sintética</td>
-                                    <td>Avenida 89 #12-34</td>
-                                </tr>
-                                <tr>
-                                    <td>Cancha 3</td>
-                                    <td>Futbol Sala</td>
-                                    <td>Disponible</td>
-                                    <td>Cancha de futbol sala techada</td>
-                                    <td>Carrera 56 #78-90</td>
-                                </tr>
+                                @forelse($canchas as $cancha)
+                                    <tr>
+                                        <td>{{ $cancha->nombre }}</td>
+                                        <td>{{ $cancha->tipo }}</td>
+                                        <td>{{ $cancha->descripcion }}</td>
+                                        <td>{{ $cancha->direccion }}</td>
+                                        <td>{{ $cancha->ubicacion->localidad }}</td>
+                                        <td>{{ $cancha->ubicacion->barrio }}</td>
+                                        <td>
+                                            @if($cancha->disponible)
+                                                <span class="badge bg-success">Disponible</span>
+                                            @else
+                                                <span class="badge bg-danger">No disponible</span>
+                                            @endif
+                                        </td>
+                                        <td>{{ $cancha->escuela->nombre }}</td>
+
+                                        @if(Auth::user()->fk_role_id == 1 && $cancha->fk_admin_id == Auth::id())
+                                            <td>
+                                                <!-- Botón Editar -->
+                                                <a href="{{ route('canchas.edit', $cancha->id) }}"
+                                                    class="btn btn-primary btn-sm">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+
+                                                <!-- Botón Eliminar -->
+                                                <form action="{{ route('canchas.destroy', $cancha->id) }}" method="POST"
+                                                    class="d-inline"
+                                                    onsubmit="return confirm('¿Seguro que deseas eliminar esta cancha?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        @endif
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="9" class="text-center">No tienes canchas registradas.</td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">Eliminar cancha</button>
-                </div>
             </div>
         </div>
     </div>
+
 
     <div class="modal fade" id="adminTorneo" tabindex="-1" aria-labelledby="adminTorneoLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-scrollable">
@@ -353,88 +381,85 @@
                                             <td>20/07/2025</td>
                                             <td>
                                                 <button class="btn btn-sm btn-primary">Editar</button>
-                                                <button class="btn btn-sm btn-warning">Eliminar</button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <button class="btn btn-warning btn-sm">Agregar Fase</button>
-                        </div>
 
-                        <div class="tab-pane fade" id="partidos">
-                            <h6>Partidos y resultados</h6>
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-sm text-center">
-                                    <thead>
-                                        <tr>
-                                            <th>Fecha</th>
-                                            <th>Equipo 1</th>
-                                            <th>Resultado</th>
-                                            <th>Equipo 2</th>
-                                            <th>Fase</th>
-                                            <th>Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td><input type="date" class="form-control form-control-sm"
-                                                    value="2025-07-10" /></td>
-                                            <td>San Pablo FC</td>
-                                            <td><input type="text" class="form-control form-control-sm text-center"
-                                                    value="2 - 1" /></td>
-                                            <td>Guerreros Dorados FC</td>
-                                            <td>Grupos</td>
-                                            <td>
-                                                <button class="btn btn-sm btn-primary">Guardar</button>
-                                                <button class="btn btn-sm btn-warning">Eliminar</button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <button class="btn btn-warning btn-sm">Agregar Partido</button>
-                        </div>
+</html> <button class="btn btn-sm btn-warning">Eliminar</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<button class="btn btn-warning btn-sm">Agregar Fase</button>
+</div>
 
-                        <div class="tab-pane fade" id="escuelas">
-                            <h6>Escuelas Participantes</h6>
-                            <ul class="list-group mb-3">
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    San Pablo FC
-                                    <button class="btn btn-sm btn-warning">Eliminar</button>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    Guerreros Dorados FC
-                                    <button class="btn btn-sm btn-warning">Eliminar</button>
-                                </li>
-                            </ul>
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Nombre de la escuela" />
-                                <button class="btn btn-warning">Agregar Escuela</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                </div>
-            </div>
-        </div>
+<div class="tab-pane fade" id="partidos">
+    <h6>Partidos y resultados</h6>
+    <div class="table-responsive">
+        <table class="table table-bordered table-sm text-center">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Equipo 1</th>
+                    <th>Resultado</th>
+                    <th>Equipo 2</th>
+                    <th>Fase</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="date" class="form-control form-control-sm" value="2025-07-10" /></td>
+                    <td>San Pablo FC</td>
+                    <td><input type="text" class="form-control form-control-sm text-center" value="2 - 1" /></td>
+                    <td>Guerreros Dorados FC</td>
+                    <td>Grupos</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary">Guardar</button>
+                        <button class="btn btn-sm btn-warning">Eliminar</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
+    <button class="btn btn-warning btn-sm">Agregar Partido</button>
+</div>
+
+<div class="tab-pane fade" id="escuelas">
+    <h6>Escuelas Participantes</h6>
+    <ul class="list-group mb-3">
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            San Pablo FC
+            <button class="btn btn-sm btn-warning">Eliminar</button>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            Guerreros Dorados FC
+            <button class="btn btn-sm btn-warning">Eliminar</button>
+        </li>
+    </ul>
+    <div class="input-group">
+        <input type="text" class="form-control" placeholder="Nombre de la escuela" />
+        <button class="btn btn-warning">Agregar Escuela</button>
+    </div>
+</div>
+</div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+</div>
+</div>
+</div>
+</div>
 
 
-    <footer class="bg-warning py-3 mt-3 shadow mt-auto">
-        <div class="container text-start d-flex align-items-center footer-content shadow"> <img src="../Images/Logo.png"
-                alt="Logo" class="img-fluid me-2" style="width: 75px; height: 75px;">
-            <p class="text-dark m-0">© Football Association System. Todos los derechos reservados</p>
-        </div>
-    </footer>
+<footer class="bg-warning py-3 mt-3 shadow mt-auto">
+    <div class="container text-start d-flex align-items-center footer-content shadow"> <img src="../Images/Logo.png"
+            alt="Logo" class="img-fluid me-2" style="width: 75px; height: 75px;">
+        <p class="text-dark m-0">© Football Association System. Todos los derechos reservados</p>
+    </div>
+</footer>
 
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
-        crossorigin="anonymous"></script>
-    <script src="validaciones.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+    crossorigin="anonymous"></script>
+<script src="validaciones.js"></script>
 </body>
-
-</html>

@@ -35,8 +35,8 @@ class EscuelaController extends Controller
 
         } elseif ($user->fk_role_id == 2) { // Rol de Entrenador
             // El entrenador ve solo las escuelas a las que está asociado
-            $escuelas = $user->escuelas;
-            return view('entrenador.escuelas', compact('escuelas'));
+            $escuela = $user->escuela;
+            return view('entrenador.escuela', compact('escuela'));
 
         } elseif ($user->fk_role_id == 3) { // Rol de Jugador
             // El jugador ve solo la información de su escuela

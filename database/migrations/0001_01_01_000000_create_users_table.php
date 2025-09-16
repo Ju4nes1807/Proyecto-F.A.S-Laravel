@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->integer('documento')->unique()->unsigned();
             $table->date('fecha_nacimiento');
             $table->string('email')->unique();
-            $table->string('telefono', 15)->nullable()->change();
+            $table->string('telefono', 15)->nullable();
             $table->foreignId('fk_role_id')->constrained('roles')->onDelete('cascade');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

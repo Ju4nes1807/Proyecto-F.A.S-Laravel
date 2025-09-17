@@ -17,10 +17,7 @@ class DatabaseSeeder extends Seeder
             UbicacionesSeeder::class,
         ]);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        
         $this->call(RolesSeeder::class);
     }
 }

@@ -86,10 +86,6 @@
                     </a>
                     <a href="{{ route('canchas.index') }}" class="list-group-item list-group-item-action">Canchas</a>
                     <a href="{{ route('usuarios.index') }}" class="list-group-item list-group-item-action">Usuarios</a>
-                    <a href="Solicitudes.html" class="list-group-item list-group-item-action">
-                        Solicitudes
-                    </a>
-                    <a href="Estadisticas.html" class="list-group-item list-group-item-action">Estadisiticas</a>
                 </div>
             </div>
 

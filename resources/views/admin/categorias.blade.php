@@ -86,10 +86,6 @@
                     </a>
                     <a href="{{ route('canchas.index') }}" class="list-group-item list-group-item-action">Canchas</a>
                     <a href="{{ route('usuarios.index') }}" class="list-group-item list-group-item-action">Usuarios</a>
-                    <a href="Solicitudes.html" class="list-group-item list-group-item-action">
-                        Solicitudes
-                    </a>
-                    <a href="Estadisticas.html" class="list-group-item list-group-item-action">Estadisiticas</a>
                 </div>
             </div>
 
@@ -97,16 +93,9 @@
             <div class="col-12 col-md-9 col-lg-10 p-4">
                 <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap">
                     <h2></h2>
-                    <form class="d-flex flex-grow-1 flex-shrink-1 me-2 ms-auto" role="search" style="max-width: 400px;">
-                        <div class="input-group flex-grow-1">
-                            <button class="input-group-text"><i class="fas fa-search"></i></button>
-                            <input type="search" class="form-control" placeholder="Buscar cancha..."
-                                aria-label="Search">
-                        </div>
-                        <a href="{{ route('categorias.create') }}"
-                            class="btn btn-warning d-flex align-items-center justify-content-center flex-shrink-0 ms-2">Registar
-                            categoria</a>
-                    </form>
+                    <a href="{{ route('categorias.create') }}"
+                        class="btn btn-warning d-flex align-items-center justify-content-center flex-shrink-0">Registrar
+                        categoria</a>
                 </div>
                 <h6></h6>
                 <h3 class="mt-3">Categorias</h3>

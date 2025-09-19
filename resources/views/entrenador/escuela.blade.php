@@ -39,9 +39,8 @@
       <div class="col-md-3 col-lg-2 sidebar mb-3">
         <h5 class="mb-3 text-primary">Menú Entrenador</h5>
         <div class="list-group">
-          <a href="{{ route('entrenador.principalEntrenador') }}"
-            class="list-group-item list-group-item-action">Inicio</a>
-          <a href="{{ url('entrenamientos') }}" class="list-group-item list-group-item-action">Entrenamientos</a>
+          <a href="{{ route('entrenador.principalEntrenador') }}"class="list-group-item list-group-item-action">Inicio</a>
+          <a href="{{ route('entrenador.entrenamientos.index') }}" class="list-group-item list-group-item-action">Entrenamientos</a>
           <a href="{{ url('torneos') }}" class="list-group-item list-group-item-action">Torneos</a>
           <a href="{{ route('escuelas.index') }}" class="list-group-item list-group-item-action active">Escuela</a>
         </div>

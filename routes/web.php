@@ -11,6 +11,7 @@ use App\Http\Middleware\CheckRole;
 use App\Http\Controllers\JugadorController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\CanchaController;
+use App\Http\Controllers\EntrenamientoController;
 
 Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
 
@@ -126,3 +127,33 @@ Route::middleware(['auth', 'role:1'])->group(function () {
 
 Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 require __DIR__ . '/auth.php';
+
+
+Route::prefix('entrenador')->name('entrenador.')->group(function () {
+    Route::resource('entrenamientos', App\Http\Controllers\EntrenamientoController::class);
+});
+Route::middleware(['auth'])->get('/profile/edit', function () {
+    $user = Auth::user();
+    if ($user->fk_role_id == 1) {
+        return redirect()->route('admin.perfil.edit');
+    } elseif ($user->fk_role_id == 2) {
+        return redirect()->route('entrenador.perfil.edit');
+    } elseif ($user->fk_role_id == 3) {
+        return redirect()->route('jugador.perfil.edit');
+    }
+})->name('profile.edit');
+
+// ADMIN - SIDEBAR
+Route::get('/admin', function () {
+    return view('dash_admin');
+})->name('admin.dashboard');
+
+// ENTRENADOR - SIDEBAR 
+Route::get('/entrenador', function () {
+    return view('principalentrenador');
+})->name('entrenador.inicio');
+// JUGADOR - SIDEBAR
+Route::prefix('jugador')->name('jugador.')->group(function () {
+    Route::get('entrenamientos', [EntrenamientoController::class, 'indexJugador'])
+        ->name('entrenamientos.index');
+});

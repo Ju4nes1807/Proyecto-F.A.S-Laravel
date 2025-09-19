@@ -42,7 +42,7 @@
                     <a href="{{ route('admin.dash_admin') }}" class="list-group-item list-group-item-action">Inicio</a>
                     <a href="{{ route('escuelas.index') }}"
                         class="list-group-item list-group-item-action active">Escuelas</a>
-                    <a href="Entrenamientos.html" class="list-group-item list-group-item-action">Entrenamientos</a>
+                    <a href="{{ route('entrenador.entrenamientos.index') }}"class="list-group-item list-group-item-action">Entrenamientos</a>
                     <a href="Torneos.html" class="list-group-item list-group-item-action">Torneos</a>
                     <a href="{{ route('categorias.index') }}" class="list-group-item list-group-item-action">
                         Categorias

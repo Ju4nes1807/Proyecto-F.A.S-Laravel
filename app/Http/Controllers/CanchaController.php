@@ -11,16 +11,32 @@ class CanchaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
 
-        $canchas = Cancha::with('escuela', 'admin', 'ubicacion')->get();
+        $ubicaciones = Ubicacion::all();
+        $canchas = Cancha::with('escuela', 'admin', 'ubicacion');
+
+        if ($request->filled('nombre')) {
+            $canchas->where('nombre', 'like', '%' . $request->nombre . '%');
+        }
+
+        if ($request->filled('tipo')) {
+            $canchas->where('tipo', 'like', '%' . $request->tipo . '%');
+        }
+
+        if ($request->filled('ubicacion')) {
+            // Asume que 'ubicacion' en el request es el ID de la ubicación
+            $canchas->where('fk_ubicacion_id', $request->ubicacion);
+        }
+
+        $canchas = $canchas->get();
 
         if ($user->fk_role_id == 1) { // Admin
-            return view('admin.canchas', compact('canchas', 'user'));
+            return view('admin.canchas', compact('canchas', 'user', 'ubicaciones'));
         } elseif ($user->fk_role_id == 2) { // Entrenador
-            return view('canchas.index_entrenador', compact('canchas', 'user'));
+            return view('canchas.index_entrenador', compact('canchas', 'user', 'ubicaciones'));
         } elseif ($user->fk_role_id == 3) { // Jugador
             return view('canchas.index_jugador', compact('canchas', 'user'));
         }

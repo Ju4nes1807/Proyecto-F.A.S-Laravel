@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
             UbicacionesSeeder::class,
         ]);
 
-        
+
         $this->call(RolesSeeder::class);
     }
 }

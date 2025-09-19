@@ -77,21 +77,36 @@
 
             <!-- Contenido principal -->
             <div class="col-12 col-md-9 col-lg-10 p-4">
-                <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap">
-                    <h2></h2>
-                    <form class="d-flex flex-grow-1 flex-shrink-1 me-2 ms-auto" role="search" style="max-width: 400px;">
+                <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-3">
+                    <form class="d-flex flex-grow-1 mb-2 mb-md-0 me-md-2" role="search" method="GET"
+                        action="{{ route('canchas.index') }}">
                         <div class="input-group flex-grow-1">
-                            <button class="input-group-text" type="submit"><i class="fas fa-search"></i></button>
-                            <input type="search" class="form-control" placeholder="Buscar cancha..."
-                                aria-label="Search">
+                            <span class="input-group-text"><i class="fas fa-search"></i></span>
+                            <input type="search" class="form-control" placeholder="Nombre..." name="nombre"
+                                value="{{ request('nombre') }}">
                         </div>
-                        @if(Auth::user()->fk_role_id == 1)
-                            <a href="{{ route('canchas.create') }}"
-                                class="btn btn-warning d-flex align-items-center justify-content-center flex-shrink-0 ms-2">
-                                Registrar cancha
-                            </a>
-                        @endif
+
+                        <div class="input-group ms-2">
+                            <span class="input-group-text">Ubicación</span>
+                            <select class="form-select" name="ubicacion">
+                                <option value="">Todas</option>
+                                @foreach($ubicaciones as $ubicacion)
+                                    <option value="{{ $ubicacion->id }}" @if(request('ubicacion') == $ubicacion->id) selected
+                                    @endif>
+                                        {{ $ubicacion->localidad }} - {{ $ubicacion->barrio }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <button class="btn btn-primary ms-2" type="submit"><i class="fas fa-filter"></i></button>
+                        <a href="{{ route('canchas.index') }}" class="btn btn-outline-warning ms-1"><i
+                                class="fas fa-sync-alt"></i></a>
                     </form>
+
+                    @if(Auth::user()->fk_role_id == 1)
+                        <a href="{{ route('canchas.create') }}" class="btn btn-warning">Registrar cancha</a>
+                    @endif
                 </div>
                 <h6>
                 </h6>

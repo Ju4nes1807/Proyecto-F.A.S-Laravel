@@ -13,21 +13,21 @@
   <!-- NAVBAR -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
     <div class="container-fluid">
-<<<<<<< HEAD
+
       <a href="principal.html" class="d-flex align-items-center text-white text-decoration-none">
         <img src="imagenes/Logo.png" alt="Logo" width="60" class="me-2" />
         <span class="fs-3">F.A.S - Jugador</span>
       </a>
       <div class="ms-auto d-flex align-items-center">
         <a href="perfil.html" class="nav-link text-white me-3">Mi Perfil</a>
-=======
+
       <a href="{{ route('entrenador.principalEntrenador') }}" class="d-flex align-items-center text-white text-decoration-none">
         <img src="imagenes/Logo.png" alt="Logo" width="60" class="me-2" />
         <span class="fs-3">F.A.S - Entrenador</span>
       </a>
       <div class="ms-auto d-flex align-items-center">
         <a href="perfil.html" class="nav-link text-white me-3">Modificar Perfil</a>
->>>>>>> c5d8cbf (Entrenamientos)
+
         <a href="login.html" class="btn btn-outline-light btn-sm" id="logoutBtn">Cerrar Sesión</a>
 
 <script>
@@ -46,13 +46,13 @@
       <aside class="col-md-3 col-lg-2 sidebar bg-light p-3 shadow-sm">
         <h5 class="text-primary mb-3">Menú Jugador</h5>
         <div class="list-group">
-<<<<<<< HEAD
+
           <a href="principal.html" class="list-group-item list-group-item-action">Inicio</a>
           <a href="entrenamientos.html" class="list-group-item list-group-item-action active">Entrenamientos</a>
-=======
+
           <a href="{{ route('entrenador.principalEntrenador') }}" class="list-group-item list-group-item-action">Inicio</a>
           <a href="{{ route('entrenador.entrenamientos.create') }}">Entrenamiento</a>
->>>>>>> c5d8cbf (Entrenamientos)
+
           <a href="torneos.html" class="list-group-item list-group-item-action">Torneos</a>
           <a href="escuela.html" class="list-group-item list-group-item-action">Escuela</a>
         </div>

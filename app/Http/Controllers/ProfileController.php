@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
 use App\Models\Categoria;
+use App\Models\Rol;
+use App\Models\Escuela;
 class ProfileController extends Controller
 {
     // Mostrar formulario
@@ -95,23 +97,48 @@ class ProfileController extends Controller
         return Redirect::to('/');
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $admin = Auth::user();
 
-        // Escuelas creadas por este admin
+        // No se cambia la variable $misEscuelas. Se mantiene la lógica original.
         $misEscuelas = $admin->escuelas->pluck('id');
 
-        // Traemos jugadores y entrenadores
+        // Se obtienen las listas para los filtros de la vista
+        $roles = Rol::all();
+        $escuelas = Escuela::all();
+
+        // Se inicia la consulta con los filtros de seguridad del administrador
         $usuarios = User::with('rol', 'escuela', 'asignaciones.categoria')
             ->whereIn('fk_role_id', [2, 3])
             ->where(function ($query) use ($misEscuelas) {
-                $query->whereNull('escuela_id') // usuarios sin escuela
-                    ->orWhereIn('escuela_id', $misEscuelas); // o asignados a mis escuelas
-            })
-            ->get();
+                $query->whereNull('escuela_id')
+                    ->orWhereIn('escuela_id', $misEscuelas);
+            });
 
-        // Categorías asociadas a las escuelas del admin
+        // --- Aplicar los filtros de búsqueda sin cambiar $misEscuelas ---
+
+        // Filtro por nombre
+        if ($request->filled('nombre')) {
+            $usuarios->where('nombres', 'like', '%' . $request->nombre . '%');
+        }
+
+        // Filtro por rol
+        if ($request->filled('rol')) {
+            $usuarios->where('fk_role_id', $request->rol);
+        }
+
+        // Filtro por escuela
+        if ($request->filled('escuela')) {
+            $usuarios->where('escuela_id', $request->escuela);
+        }
+
+        // --- Fin de la lógica de búsqueda ---
+
+        // Se obtienen los resultados de la consulta final
+        $usuarios = $usuarios->get();
+
+        // Lógica para obtener las categorías
         $categorias = collect();
         if ($admin->fk_role_id == 1) {
             $categorias = Categoria::whereHas('escuelas', function ($q) use ($admin) {
@@ -119,7 +146,8 @@ class ProfileController extends Controller
             })->with('escuelas')->get();
         }
 
-        return view('admin.usuarios', compact('usuarios', 'admin', 'categorias'));
+        // Se pasan las variables a la vista, incluyendo los datos para los filtros
+        return view('admin.usuarios', compact('usuarios', 'admin', 'categorias', 'roles', 'escuelas'));
     }
 
 

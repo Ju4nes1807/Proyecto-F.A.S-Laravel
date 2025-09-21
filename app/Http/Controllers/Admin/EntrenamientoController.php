@@ -45,7 +45,7 @@ class EntrenamientoController extends Controller
 
         Entrenamiento::create($data);
 
-        return redirect()->route('admin.entrenamientos.index')->with('success', 'Entrenamiento creado correctamente.');
+        return redirect()->route('admin.entrenamiento.index')->with('success', 'Entrenamiento creado correctamente.');
     }
 
     public function show(Entrenamiento $entrenamiento)

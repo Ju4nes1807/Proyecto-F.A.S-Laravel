@@ -68,14 +68,11 @@
             <div class="col-12 col-md-3 col-lg-2 sidebar">
                 <h5 class="mb-3 text-primary">Inicio</h5>
                 <div class="list-group">
-                    <a href="{{ route('admin.dash_admin') }}" class="list-group-item list-group-item-action active"
-                        aria-current="true">
-                        Inicio
-                    </a>
+                    <a href="{{ route('admin.dash_admin') }}" class="list-group-item list-group-item-action">Inicio</a>
                     <a href="{{ route('escuelas.index') }}" class="list-group-item list-group-item-action">
                         Escuelas
                     </a>
-                    <a href="{{ route('entrenador.entrenamientos.index') }}"class="list-group-item list-group-item-action">Entrenamientos</a>
+                    <a href="{{ route('admin.entrenamientos.index') }}" class="list-group-item list-group-item-action">Entrenamientos</a>
                         
                     <a href="Torneos.html" class="list-group-item list-group-item-action">
                         Torneos

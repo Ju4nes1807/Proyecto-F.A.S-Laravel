@@ -12,20 +12,22 @@
                 <thead class="table-warning">
                     <tr>
                         <th>#</th>
-                        <th>Nombre</th>
+                        <th>Título</th>
                         <th>Descripción</th>
-                        <th>Duración</th>
                         <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Cancha</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($entrenamientos as $entrenamiento)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $entrenamiento->nombre }}</td>
+                            <td>{{ $entrenamiento->titulo }}</td>
                             <td>{{ $entrenamiento->descripcion }}</td>
-                            <td>{{ $entrenamiento->duracion }} min</td>
-                            <td>{{ $entrenamiento->created_at->format('d/m/Y') }}</td>
+                            <td>{{ $entrenamiento->fecha }}</td>
+                            <td>{{ $entrenamiento->hora }}</td>
+                            <td>{{ $entrenamiento->cancha }}</td>
                         </tr>
                     @endforeach
                 </tbody>

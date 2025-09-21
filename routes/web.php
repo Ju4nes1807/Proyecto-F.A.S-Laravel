@@ -12,6 +12,25 @@ use App\Http\Controllers\JugadorController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\CanchaController;
 use App\Http\Controllers\EntrenamientoController;
+use App\Http\Controllers\Admin\EntrenamientoController as AdminEntrenamientoController;
+use App\Http\Controllers\EntrenamientoController as EntrenadorEntrenamientoController;
+
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:1'])->group(function () {
+    Route::get('dashboard', function () {
+        return view('admin.dashboard'); // O tu vista de admin
+    })->name('dashboard');
+
+    Route::resource('entrenamientos', AdminEntrenamientoController::class);
+});
+
+// ENTRENADOR
+Route::prefix('entrenador')->name('entrenador.')->middleware(['auth', 'role:2'])->group(function () {
+    Route::get('inicio', function () {
+        return view('entrenador.principalEntrenador');
+    })->name('inicio');
+
+    Route::resource('entrenamientos', EntrenadorEntrenamientoController::class);
+});
 
 Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
 
@@ -143,17 +162,28 @@ Route::middleware(['auth'])->get('/profile/edit', function () {
     }
 })->name('profile.edit');
 
-// ADMIN - SIDEBAR
-Route::get('/admin', function () {
-    return view('dash_admin');
-})->name('admin.dashboard');
 
-// ENTRENADOR - SIDEBAR 
-Route::get('/entrenador', function () {
-    return view('principalentrenador');
-})->name('entrenador.inicio');
-// JUGADOR - SIDEBAR
-Route::prefix('jugador')->name('jugador.')->group(function () {
-    Route::get('entrenamientos', [EntrenamientoController::class, 'indexJugador'])
-        ->name('entrenamientos.index');
+// ================== ADMIN ==================
+Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+    Route::get('entrenamientos', [EntrenamientoController::class, 'adminIndex'])->name('entrenamientos.index');
+    Route::get('entrenamientos/create', [EntrenamientoController::class, 'create'])->name('entrenamientos.create');
+    Route::post('entrenamientos', [EntrenamientoController::class, 'store'])->name('entrenamientos.store');
+    Route::get('entrenamientos/{entrenamiento}/edit', [EntrenamientoController::class, 'edit'])->name('entrenamientos.edit');
+    Route::put('entrenamientos/{entrenamiento}', [EntrenamientoController::class, 'update'])->name('entrenamientos.update');
+    Route::delete('entrenamientos/{entrenamiento}', [EntrenamientoController::class, 'destroy'])->name('entrenamientos.destroy');
+});
+
+// ================== ENTRENADOR ==================
+Route::prefix('entrenador')->name('entrenador.')->middleware(['auth'])->group(function () {
+    Route::get('entrenamientos', [EntrenamientoController::class, 'index'])->name('entrenamientos.index');
+    Route::get('entrenamientos/create', [EntrenamientoController::class, 'create'])->name('entrenamientos.create');
+    Route::post('entrenamientos', [EntrenamientoController::class, 'store'])->name('entrenamientos.store');
+    Route::get('entrenamientos/{entrenamiento}/edit', [EntrenamientoController::class, 'edit'])->name('entrenamientos.edit');
+    Route::put('entrenamientos/{entrenamiento}', [EntrenamientoController::class, 'update'])->name('entrenamientos.update');
+    Route::delete('entrenamientos/{entrenamiento}', [EntrenamientoController::class, 'destroy'])->name('entrenamientos.destroy');
+});
+
+// ================== JUGADOR ==================
+Route::prefix('jugador')->name('jugador.')->middleware(['auth'])->group(function () {
+    Route::get('entrenamientos', [EntrenamientoController::class, 'indexJugador'])->name('entrenamientos.index');
 });

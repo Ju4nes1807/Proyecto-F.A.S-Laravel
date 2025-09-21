@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="shortcut icon" href="../Images/Logo.png" type="image/x-icon" />
+  <link rel="shortcut icon" href="{{ asset('Images/Logo.png') }}" type="image/x-icon" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
   <title>Usuarios</title>
@@ -12,8 +12,8 @@
 
 <body class="d-flex flex-column min-vh-100">
   <div class="navbar navbar-expand bg-primary lg-4 shadow mb-4">
-    <a href="landinpage.html">
-      <img src="../Images/Logo.png" alt="Logo" class="img-fluid me-2" style="width: 75px; height: 75px;" />
+    <a href="{{ route('landinpage') }}">
+      <img src="{{ asset('Images/Logo.png') }}" alt="Logo" class="img-fluid me-2" style="width: 75px; height: 75px;" />
     </a>
     <p class="navbar-brand text-light fs-2 shadow">F.A.S</p>
     <div class="collapse navbar-collapse" id="navNavbarDropdown">
@@ -25,7 +25,7 @@
           </form>
         </li>
         <li class="nav-item">
-          <a href="{{ route('admin.perfil.update') }}" class="nav-link text-light shadow">Modificar Perfil</a>
+          <a href="{{ route('admin.perfil.edit') }}" class="nav-link text-light shadow">Modificar Perfil</a>
         </li>
       </ul>
     </div>
@@ -38,7 +38,8 @@
         <div class="list-group">
           <a href="{{ route('admin.dash_admin') }}" class="list-group-item list-group-item-action">Inicio</a>
           <a href="{{ route('escuelas.index') }}" class="list-group-item list-group-item-action">Escuelas</a>
-          <a href="{{ route('entrenador.entrenamientos.index') }}"class="list-group-item list-group-item-action">Entrenamientos</a>
+
+          <a href="{{ route('admin.entrenamientos.index') }}" class="list-group-item list-group-item-action">Entrenamientos</a>
           <a href="Torneos.html" class="list-group-item list-group-item-action">Torneos</a>
           <a href="{{ route('categorias.index') }}" class="list-group-item list-group-item-action">
             Categorias
@@ -49,21 +50,39 @@
       </div>
 
       <div class="col-md-9 col-lg-10 p-4">
-        <div class="d-flex flex-column flex-md-row align-items-center justify-content-md-end mb-3">
-          <form class="d-flex flex-column flex-sm-row me-md-3 mt-3 mt-md-0" action="{{ route('usuarios.index') }}"
+        <h3 class="mt-3">Usuarios</h3>
+
+        {{-- Formulario de búsqueda multicriterio --}}
+        <div class="d-flex flex-column flex-md-row align-items-center justify-content-md-between mb-3">
+          <form class="d-flex flex-grow-1 me-md-2 align-items-center" action="{{ route('usuarios.index') }}"
             method="GET" role="search">
-            <div class="input-group me-sm-2 mb-2 mb-sm-0" style="width: auto;">
-              <button class="input-group-text" type="submit"><i class="fas fa-search"></i></button>
-              <input class="form-control" type="search" name="q" placeholder="Buscar usuario..." aria-label="Search"
-                value="{{ request('q') }}" />
+            <div class="input-group flex-grow-1 me-2">
+              <span class="input-group-text"><i class="fas fa-search"></i></span>
+              <input class="form-control" type="search" name="nombre" placeholder="Nombre..."
+                value="{{ request('nombres') }}" />
             </div>
-            @if(request()->filled('q'))
-              <a href="{{ route('usuarios.index') }}" class="btn btn-primary ms-2">Limpiar</a>
-            @endif
+
+            <div class="input-group flex-grow-1 me-2">
+              <span class="input-group-text">Escuela</span>
+              <select class="form-select" name="escuela">
+                <option value="">Todas</option>
+                @foreach($admin->escuelas as $escuela)
+                  <option value="{{ $escuela->id }}" @if(request('escuela') == $escuela->id) selected @endif>
+                    {{ $escuela->nombre }}
+                  </option>
+                @endforeach
+              </select>
+            </div>
+
+            <button class="btn btn-primary me-2" type="submit">
+              <i class="fas fa-filter"></i>
+            </button>
+
+            <a href="{{ route('usuarios.index') }}" class="btn btn-outline-warning">
+              <i class="fas fa-sync-alt"></i>
+            </a>
           </form>
         </div>
-
-        <h3 class="mt-3">Usuarios</h3>
 
         {{-- Mensajes de error / éxito --}}
         @if(session('error'))
@@ -72,7 +91,6 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
           </div>
         @endif
-
         @if(session('success'))
           <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session('success') }}
@@ -95,7 +113,7 @@
           @foreach(['3' => 'jugadores', '2' => 'entrenadores'] as $role_id => $tab)
             <div class="tab-pane fade @if($loop->first) show active @endif" id="{{ $tab }}" role="tabpanel">
               <div class="table-responsive">
-                <table class="table">
+                <table class="table table-striped table-hover">
                   <thead>
                     <tr>
                       <th>Nombre</th>
@@ -107,7 +125,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    @foreach($usuarios->where('fk_role_id', $role_id) as $user)
+                    @forelse($usuarios->where('fk_role_id', $role_id) as $user)
                       @php
                         $asignacion = $user->asignaciones->first() ?? null;
                         $modalId = $tab . '-' . $user->id;
@@ -117,36 +135,31 @@
                         <td>{{ $user->nombres }} {{ $user->apellidos }}</td>
                         <td>{{ $user->email }}</td>
                         <td>{{ $user->rol->tipo }}</td>
-                        <td>{{ $asignacion ? $user->escuela->nombre : 'Sin asignar' }}</td>
+                        <td>{{ $asignacion && $user->escuela ? $user->escuela->nombre : 'Sin asignar' }}</td>
 
                         <td>
-                          <div class="d-flex flex-column gap-2 mb-2">
+                          <div class="d-flex flex-column gap-2">
 
-                            {{-- Botón para asignar escuela (si no tiene) --}}
-                            <div class="d-flex flex-column gap-2 mb-2">
-
-                              {{-- Botón para asignar escuela (si no tiene) --}}
-                              @if(!$asignacion)
-                                @if($admin->escuelas->isNotEmpty())
-                                  <form action="{{ route('escuelas.asignarUsuario', $admin->escuelas->first()->id) }}"
-                                    method="POST">
-                                    @csrf
-                                    <input type="hidden" name="usuario_id" value="{{ $user->id }}">
-                                    <button type="submit" class="btn btn-primary btn-sm">Asignar Escuela</button>
-                                  </form>
-                                @else
-                                  <div class="card bg-light border-warning">
-                                    <div class="card-body p-2 d-flex align-items-center">
-                                      <i class="fas fa-exclamation-circle text-warning me-2"></i>
-                                      <small class="text-secondary">Debes tener una escuela para asignar.</small>
-                                    </div>
+                            {{-- Botón para asignar escuela --}}
+                            @if(!$asignacion)
+                              @if($admin->escuelas->isNotEmpty())
+                                <form action="{{ route('escuelas.asignarUsuario', $admin->escuelas->first()->id) }}"
+                                  method="POST">
+                                  @csrf
+                                  <input type="hidden" name="usuario_id" value="{{ $user->id }}">
+                                  <button type="submit" class="btn btn-primary btn-sm">Asignar Escuela</button>
+                                </form>
+                              @else
+                                <div class="card bg-light border-warning">
+                                  <div class="card-body p-2 d-flex align-items-center">
+                                    <i class="fas fa-exclamation-circle text-warning me-2"></i>
+                                    <small class="text-secondary">Debes tener una escuela para asignar.</small>
                                   </div>
-                                @endif
+                                </div>
                               @endif
+                            @endif
 
-                            </div>
-
-                            {{-- Botón para quitar escuela (si ya tiene y fue asignado por este admin) --}}
+                            {{-- Botón para quitar escuela --}}
                             @if($asignacion && $asignacion->assigned_by == auth()->id())
                               <form action="{{ route('usuarios.eliminarAsignacion', $asignacion->id) }}" method="POST">
                                 @csrf
@@ -158,11 +171,8 @@
                               </form>
                             @endif
 
-                            {{-- Select para asignar categoría (SOLO jugadores con escuela asignada por este admin) --}}
                             {{-- Asignar o quitar categoría (SOLO jugadores con escuela asignada por este admin) --}}
                             @if($user->fk_role_id == 3 && $asignacion && $asignacion->assigned_by == auth()->id())
-
-                              {{-- Si NO tiene categoría, mostrar el select para asignar --}}
                               @if(!$asignacion->categoria_id)
                                 <form action="{{ route('categorias.asignarUsuario', $user->id) }}" method="POST"
                                   class="d-flex gap-2">
@@ -173,26 +183,19 @@
                                       <option value="{{ $categoria->id }}">{{ $categoria->nombre }}</option>
                                     @endforeach
                                   </select>
-                                  <button type="submit" class="btn btn-primary btn-sm">Asignar
-                                    Categoría</button>
+                                  <button type="submit" class="btn btn-primary btn-sm">Asignar Categoría</button>
                                 </form>
-                              @endif
-
-                              {{-- Si YA tiene categoría, mostrar el botón para quitar --}}
-                              @if($asignacion->categoria_id)
+                              @else
                                 <form action="{{ route('usuarios.eliminarCategoria', $asignacion->id) }}" method="POST"
                                   onsubmit="return confirm('¿Seguro que quieres quitar la categoría de este jugador?');">
                                   @csrf
                                   @method('DELETE')
-                                  <button type="submit" class="btn btn-warning btn-sm">Quitar
-                                    Categoría</button>
+                                  <button type="submit" class="btn btn-warning btn-sm">Quitar Categoría</button>
                                 </form>
                               @endif
-
                             @endif
                           </div>
                         </td>
-
 
                         <td>
                           <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
@@ -200,6 +203,7 @@
                         </td>
                       </tr>
 
+                      {{-- Modal de información del usuario --}}
                       <div class="modal fade" id="{{ $modalId }}" tabindex="-1" aria-labelledby="{{ $modalId }}Label"
                         aria-hidden="true">
                         <div class="modal-dialog modal-lg">
@@ -218,7 +222,7 @@
                                 <li class="list-group-item"><strong>Edad:</strong>
                                   {{ \Carbon\Carbon::parse($user->fecha_nacimiento)->age }}</li>
                                 <li class="list-group-item"><strong>Escuela:</strong>
-                                  {{ $asignacion ? $user->escuela->nombre : 'Sin asignar' }}</li>
+                                  {{ $asignacion && $user->escuela ? $user->escuela->nombre : 'Sin asignar' }}</li>
                                 <li class="list-group-item"><strong>Categoría:</strong>
                                   @if($user->fk_role_id == 3)
                                     {{ $asignacion && $asignacion->categoria ? $asignacion->categoria->nombre : 'Sin asignar' }}
@@ -241,8 +245,11 @@
                           </div>
                         </div>
                       </div>
-
-                    @endforeach
+                    @empty
+                      <tr>
+                        <td colspan="6" class="text-center">No se encontraron usuarios.</td>
+                      </tr>
+                    @endforelse
                   </tbody>
                 </table>
               </div>
@@ -255,13 +262,12 @@
 
   <footer class="bg-warning py-3 shadow mt-auto">
     <div class="container text-start d-flex align-items-center shadow">
-      <img src="../Images/Logo.png" alt="Logo" class="img-fluid me-2" style="width: 75px; height: 75px;" />
+      <img src="{{ asset('Images/Logo.png') }}" alt="Logo" class="img-fluid me-2" style="width: 75px; height: 75px;" />
       <p class="text-dark m-0">© Football Association System. Todos los derechos reservados</p>
     </div>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
-    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

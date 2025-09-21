@@ -87,19 +87,6 @@
                 <input type="text" name="cancha" class="form-control" value="{{ $entrenamiento->cancha }}">
               </div>
 
-              <div class="mb-3">
-                <label class="form-label">Categoría</label>
-                <select name="categoria_id" class="form-select">
-                  <option value="">-- Seleccionar categoría --</option>
-                  @foreach ($categorias as $categoria)
-                    <option value="{{ $categoria->id }}" 
-                      @if ($categoria->id == $entrenamiento->categoria_id) selected @endif>
-                      {{ $categoria->nombre }}
-                    </option>
-                  @endforeach
-                </select>
-              </div>
-
               <button type="submit" class="btn btn-warning">💾 Actualizar</button>
               <a href="{{ route('entrenador.entrenamientos.index') }}" class="btn btn-secondary">⬅ Volver</a>
             </form>

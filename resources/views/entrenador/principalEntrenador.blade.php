@@ -48,9 +48,10 @@
       <aside class="col-md-3 col-lg-2 sidebar p-3">
         <h5 class="text-primary mb-3">Menú Entrenador</h5>
         <div class="list-group">
-          <a href="principal.html" class="list-group-item list-group-item-action active">Inicio</a>
+          <a href="{{ route('entrenador.principalEntrenador') }}"
+            class="list-group-item list-group-item-action active">Inicio</a>
           <a href="entrenamientos.html" class="list-group-item list-group-item-action">Entrenamientos</a>
-          <a href="torneos.html" class="list-group-item list-group-item-action">Torneos</a>
+          <a href="{{ route('torneos.index') }}" class="list-group-item list-group-item-action">Torneos</a>
           <a href="{{ route('escuelas.index') }}" class="list-group-item list-group-item-action">Escuela</a>
         </div>
       </aside>
@@ -77,8 +78,8 @@
             <div class="card border-warning shadow-sm">
               <div class="card-body text-center">
                 <h5 class="card-title">Torneos</h5>
-                <p>Administra torneos en los que participa tu escuela.</p>
-                <a href="torneos.html" class="btn btn-warning btn-sm">Gestionar Torneos</a>
+                <p>Mira los torneos en los que esta tu escuela.</p>
+                <a href="{{ route('torneos.index') }}" class="btn btn-warning btn-sm">Ver Torneos</a>
               </div>
             </div>
           </div>

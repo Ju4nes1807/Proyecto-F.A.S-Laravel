@@ -49,7 +49,7 @@
             <a href="{{ route('jugador.principal') }}" class="list-group-item list-group-item-action active">Inicio</a>
             <a href="{{ route('jugador.perfil') }}" class="list-group-item list-group-item-action">Perfil</a>
             <a href="entrenamientos.html" class="list-group-item list-group-item-action">Entrenamientos</a>
-            <a href="torneos.html" class="list-group-item list-group-item-action">Torneos</a>
+            <a href="{{ route('jugador.torneos') }}" class="list-group-item list-group-item-action">Torneos</a>
             <a href="{{ route('escuelas.index') }}" class="list-group-item list-group-item-action action">Escuela</a>
           </div>
         </aside>

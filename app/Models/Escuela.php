@@ -45,4 +45,11 @@ class Escuela extends Model
         return $this->hasMany(Asignacion::class);
     }
 
+    public function torneos()
+    {
+        return $this->belongsToMany(Torneo::class, 'escuela_torneo', 'fk_escuela_id', 'fk_torneo_id')
+            ->withTimestamps();
+    }
+
+
 }

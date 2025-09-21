@@ -104,24 +104,6 @@ class CanchaController extends Controller
     }
 
     // En tu controlador (probablemente AdminController o CanchasController)
-
-    public function dash_admin()
-    {
-        // Obtener el usuario autenticado
-        $user = Auth::user();
-
-        // Obtener solo las canchas del usuario logueado
-        // Nota: El método "show" que mostraste, de hecho, hace esto mismo,
-        // por lo que el nombre de esa función estaba mal. Es una lista, no un solo recurso.
-        $canchas = Cancha::with(['escuela', 'ubicacion'])
-            ->where('fk_admin_id', $user->id)
-            ->get();
-
-        // Pasar las canchas y el usuario a la vista
-        // Asegúrate de que tu vista se llama 'admin.dash_admin'
-        return view('admin.dash_admin', compact('canchas', 'user'));
-    }
-
     /**
      * Display the specified resource.
      */

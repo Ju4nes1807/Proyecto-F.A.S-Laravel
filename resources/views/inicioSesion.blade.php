@@ -80,9 +80,6 @@
                     <p class="text-danger">{{ $message }}</p>
                 @enderror
             </div>
-            <div class="mb-3 text-end">
-                <a href="RecuperarContra.html" class="text-decoration-none">¿Olvidó su contraseña?</a>
-            </div>
             <div class="d-grid">
                 <button type="submit" class="btn btn-primary" name="BtnLogin">Ingresar</button>
             </div>

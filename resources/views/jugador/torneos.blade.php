@@ -42,7 +42,7 @@
     <div class="row">
       <!-- SIDEBAR -->
       <div class="col-12 col-md-3 col-lg-2 sidebar mb-3">
-        <h5 class="mb-3 text-primary">Menú</h5>
+        <h5 class="mb-3 text-primary">Menú Jugador</h5>
         <div class="list-group">
           <a href="{{ route('jugador.principal') }}" class="list-group-item list-group-item-action">Inicio</a>
           <a href="{{ route('jugador.perfil') }}" class="list-group-item list-group-item-action">Perfil</a>

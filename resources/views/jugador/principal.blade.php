@@ -88,7 +88,7 @@
                 <div class="card-body text-center">
                   <h5 class="card-title">Torneos</h5>
                   <p>Torneos en los que participas.</p>
-                  <a href="torneos.html" class="btn btn-warning btn-sm">Ver Torneos</a>
+                  <a href="{{ route('jugador.torneos') }}" class="btn btn-warning btn-sm">Ver Torneos</a>
                 </div>
               </div>
             </div>

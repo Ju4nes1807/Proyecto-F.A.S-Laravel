@@ -1,6 +1,7 @@
 <?php
 use App\Http\Controllers\EntrenadorController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RutasDashboardAdmin;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\AdminController;
@@ -31,6 +32,7 @@ Route::prefix('entrenador')->name('entrenador.')->middleware(['auth', 'role:2'])
 
     Route::resource('entrenamientos', EntrenadorEntrenamientoController::class);
 });
+use App\Http\Controllers\TorneoController;
 
 Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
 
@@ -136,12 +138,38 @@ Route::get('/canchas', [CanchaController::class, 'index'])
     ->middleware('auth');
 //Rutas solo para admins
 Route::middleware(['auth', 'role:1'])->group(function () {
-    Route::get('/admin/dash_admin', [CanchaController::class, 'dash_admin'])->name('admin.dash_admin');
     Route::get('/canchas/create', [CanchaController::class, 'create'])->name('canchas.create');
     Route::post('/canchas', [CanchaController::class, 'store'])->name('canchas.store');
     Route::get('/canchas/{id}/edit', [CanchaController::class, 'edit'])->name('canchas.edit');
     Route::put('/canchas/{id}', [CanchaController::class, 'update'])->name('canchas.update');
     Route::delete('/canchas/{id}', [CanchaController::class, 'destroy'])->name('canchas.destroy');
+});
+
+Route::get('/torneos', [TorneoController::class, 'index'])->name('torneos.index');
+Route::get('/entrenador/torneos', [TorneoController::class, 'index'])->name('entrenador.torneos');
+Route::get('/jugador/torneos', [TorneoController::class, 'index'])
+    ->name('jugador.torneos')
+    ->middleware('auth');
+
+
+Route::middleware(['auth', 'role:1'])->group(function () {
+    // Vista principal para el admin: ver todos los torneos del sistema.
+    // Esta es la vista por defecto al hacer clic en 'Torneos' en el menú.
+
+    // Vista adicional para el admin: ver solo sus torneos personales.
+
+    Route::get('/admin/dash_admin', [TorneoController::class, 'misTorneos'])->name('admin.dash_admin');
+    // Rutas para la creación, edición y eliminación de torneos
+    Route::get('/admin/torneos/create', [TorneoController::class, 'create'])->name('torneos.create');
+    Route::post('/admin/torneos', [TorneoController::class, 'store'])->name('torneos.store');
+    Route::get('/admin/torneos/{torneo}/edit', [TorneoController::class, 'edit'])->name('torneos.edit');
+    Route::put('/admin/torneos/{torneo}', [TorneoController::class, 'update'])->name('torneos.update');
+    Route::delete('/admin/torneos/{torneo}', [TorneoController::class, 'destroy'])->name('torneos.destroy');
+});
+
+
+Route::middleware(['auth', 'role:1'])->group(function () {
+    Route::get('/admin/dash_admin', [RutasDashboardAdmin::class, 'rutasAdmin'])->name('admin.dash_admin');
 });
 
 Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');

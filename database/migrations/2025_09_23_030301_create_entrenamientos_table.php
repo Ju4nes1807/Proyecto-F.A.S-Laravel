@@ -10,11 +10,20 @@ return new class extends Migration
     {
         Schema::create('entrenamientos', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
+            $table->string('titulo'); // 👈 antes 'nombre', ahora 'titulo'
             $table->text('descripcion')->nullable();
             $table->date('fecha');
+            $table->time('hora');
+            $table->string('cancha')->nullable();
+
+            // Relación con usuarios (entrenador que crea el entrenamiento)
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+
+            // Relación opcional con categorías
             $table->unsignedBigInteger('categoria_id')->nullable();
             $table->foreign('categoria_id')->references('id')->on('categorias')->onDelete('set null');
+
             $table->timestamps();
         });
     }
@@ -24,3 +33,4 @@ return new class extends Migration
         Schema::dropIfExists('entrenamientos');
     }
 };
+

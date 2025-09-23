@@ -46,7 +46,7 @@
         <div class="list-group">
           <a href="{{ route('entrenador.principalEntrenador') }}" class="list-group-item list-group-item-action">Inicio</a>
           <a href="{{ route('entrenador.entrenamientos.index') }}" class="list-group-item list-group-item-action active">Entrenamientos</a>
-          <a href="#" class="list-group-item list-group-item-action">Torneos</a>
+          <a href="{{ route('torneos.index') }}" class="list-group-item list-group-item-action">Torneos</a>
           <a href="{{ route('escuelas.index') }}" class="list-group-item list-group-item-action">Escuela</a>
         </div>
       </aside>

@@ -78,7 +78,7 @@
                     <a href="{{ route('entrenador.entrenamientos.index') }}"class="list-group-item list-group-item-action">
                         Entrenamientos
                     </a>
-                    <a href="Torneos.html" class="list-group-item list-group-item-action">
+                    <a href="{{ route('torneos.index') }}" class="list-group-item list-group-item-action">
                         Torneos
                     </a>
                     <a href="{{ route('categorias.index') }}" class="list-group-item list-group-item-action active">

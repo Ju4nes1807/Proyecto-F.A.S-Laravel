@@ -14,14 +14,14 @@
   <div class="navbar navbar-expand-md bg-primary shadow mb-4">
     <a href="#" class="d-flex align-items-center">
       <img src="{{ asset('images/Logo.png') }}" alt="Logo" class="img-fluid me-2" style="width: 75px; height: 75px;">
-      <p class="navbar-brand text-dark fs-2 shadow m-0">F.A.S</p>
+      <p class="navbar-brand text-light fs-2 shadow m-0">F.A.S</p>
     </a>
     <div class="collapse navbar-collapse">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item">
           <form method="POST" action="{{ route('logout') }}">
             @csrf
-            <button type="submit" class="nav-link text-dark shadow">Cerrar sesión</button>
+            <button type="submit" class="nav-link text-light shadow">Cerrar sesión</button>
           </form>
         </li>
       </ul>
@@ -38,7 +38,7 @@
           <a href="{{ route('admin.dash_admin') }}" class="list-group-item list-group-item-action">Inicio</a>
           <a href="{{ route('escuelas.index') }}" class="list-group-item list-group-item-action">Escuelas</a>
           <a href="{{ route('admin.entrenamientos.index') }}" class="list-group-item list-group-item-action active">Entrenamientos</a>
-          <a href="#" class="list-group-item list-group-item-action">Torneos</a>
+          <a href="{{ route('torneos.index') }}" class="list-group-item list-group-item-action">Torneos</a>
           <a href="{{ route('categorias.index') }}" class="list-group-item list-group-item-action">Categorías</a>
           <a href="{{ route('canchas.index') }}" class="list-group-item list-group-item-action">Canchas</a>
           <a href="{{ route('usuarios.index') }}" class="list-group-item list-group-item-action">Usuarios</a>

@@ -68,18 +68,11 @@
             <div class="col-12 col-md-3 col-lg-2 sidebar">
                 <h5 class="mb-3 text-primary">Inicio</h5>
                 <div class="list-group">
-                    <a href="{{ route('admin.dash_admin') }}" class="list-group-item list-group-item-action">Inicio</a>
-                    <a href="{{ route('escuelas.index') }}" class="list-group-item list-group-item-action">
-                        Escuelas
-                    </a>
+                    <a href="{{ route('admin.dash_admin') }}" class="list-group-item list-group-item-action active">Inicio</a>
+                    <a href="{{ route('escuelas.index') }}" class="list-group-item list-group-item-action">Escuelas</a>
                     <a href="{{ route('admin.entrenamientos.index') }}" class="list-group-item list-group-item-action">Entrenamientos</a>
-                        
-                    <a href="Torneos.html" class="list-group-item list-group-item-action">
-                        Torneos
-                    </a>
-                    <a href="{{ route('categorias.index') }}" class="list-group-item list-group-item-action">
-                        Categorias
-                    </a>
+                    <a href="{{ route('torneos.index') }}" class="list-group-item list-group-item-action">Torneos</a>
+                    <a href="{{ route('categorias.index') }}" class="list-group-item list-group-item-action">Categorias</a>
                     <a href="{{ route('canchas.index') }}" class="list-group-item list-group-item-action">Canchas</a>
                     <a href="{{ route('usuarios.index') }}" class="list-group-item list-group-item-action">Usuarios</a>
                 </div>
@@ -96,7 +89,6 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
                     </div>
                 @endif
-
                 <div class="row mt-4">
                     <div class="col-12 col-md-6 col-lg-4 mb-4">
                         <div class="card border-warning">
@@ -116,6 +108,7 @@
                                 <p>Consulte informacion sobre sus los entrenamientos de su escuela</p>
                                 <button class="btn btn-warning btn-sm shadow-sm" data-bs-toggle="modal"
                                     data-bs-target="#buscarEntrenamientos">Consultar Entrenamientos</button>
+                                    
                             </div>
                         </div>
                     </div>
@@ -126,7 +119,7 @@
                                 <h5 class="card-title">Torneos</h5>
                                 <p>Consulte informacion de sus torneos realizados</p>
                                 <button class="btn btn-warning btn-sm shadow-sm" data-bs-toggle="modal"
-                                    data-bs-target="#buscarTorneos">Consultar Torneo</button>
+                                    data-bs-target="#consultarTorneos">Consultar Torneo</button>
                             </div>
                         </div>
                     </div>
@@ -219,35 +212,89 @@
         </div>
     </div>
 
-    <div class="modal fade" id="buscarTorneos" tabindex="-1" aria-labelledby="buscarTorneosLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+    <div class="modal fade" id="consultarTorneos" tabindex="-1" aria-labelledby="consultarTorneosLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content">
                 <div class="modal-header bg-warning">
-                    <h5 class="modal-title" id="buscarTorneosLabel">Buscar Torneos</h5>
+                    <h5 class="modal-title" id="consultarTorneosLabel">Mis Torneos</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body">
-                    <input type="text" id="buscadorTorneo" class="form-control mb-3"
-                        placeholder="Buscar por categoría, día o escuela...">
-                    <ul id="listaTorneos" class="list-group">
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Football Stellar
-                            <button class="btn btn-sm btn-outline-primary abrir-admin"
-                                data-torneo="Football Stellar">Administrar</button>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Copa Estelar
-                            <button class="btn btn-sm btn-outline-primary abrir-admin"
-                                data-torneo="Copa Estelar">Administrar</button>
-                        </li>
-                    </ul>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <h3>Información General</h3>
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Descripción</th>
+                                    <th>Fecha Inicio</th>
+                                    <th>Fecha Fin</th>
+                                    <th>Categoría</th>
+                                    <th>Ubicación</th>
+                                    <th>Estado</th>
+                                    @if(Auth::user()->fk_role_id == 1)
+                                        <th>Acciones</th>
+                                    @endif
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($torneos as $torneo)
+                                    @if($torneo->fk_admin_id == Auth::id())
+                                        <tr>
+                                            <td>{{ $torneo->nombre }}</td>
+                                            <td>{{ $torneo->descripcion }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($torneo->fecha_inicio)->format('d/m/Y') }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($torneo->fecha_fin)->format('d/m/Y') }}</td>
+                                            <td>{{ $torneo->categoria->nombre ?? 'Sin categoría' }}</td>
+                                            <td>{{ $torneo->ubicacion->localidad ?? 'Sin ubicación' }}
+                                                - {{ $torneo->ubicacion->barrio ?? 'Sin ubicacion' }}
+                                            </td>
+                                            <td>
+                                                @if($torneo->estado == 'En curso')
+                                                    <span class="badge bg-success">En curso</span>
+                                                @elseif($torneo->estado == 'Finalizado')
+                                                    <span class="badge bg-secondary">Finalizado</span>
+                                                @elseif($torneo->estado == 'Cancelado')
+                                                    <span class="badge bg-danger">Cancelado</span>
+                                                @endif
+                                            </td>
+
+                                            @if(Auth::user()->fk_role_id == 1)
+                                                <td>
+                                                    <!-- Botón Editar -->
+                                                    <a href="{{ route('torneos.edit', $torneo->id) }}"
+                                                        class="btn btn-primary btn-sm">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+
+                                                    <!-- Botón Eliminar -->
+                                                    <form action="{{ route('torneos.destroy', $torneo->id) }}" method="POST"
+                                                        class="d-inline"
+                                                        onsubmit="return confirm('¿Seguro que deseas eliminar este torneo?')">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger btn-sm">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            @endif
+                                        </tr>
+                                    @endif
+                                @empty
+                                    <tr>
+                                        <td colspan="8" class="text-center">No tienes torneos registrados.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
 
     <div class="modal fade" id="consultarCanchas" tabindex="-1" aria-labelledby="consultarCanchasLabel"
         aria-hidden="true">
@@ -328,6 +375,7 @@
             </div>
         </div>
     </div>
+
 
 
     <div class="modal fade" id="adminTorneo" tabindex="-1" aria-labelledby="adminTorneoLabel" aria-hidden="true">

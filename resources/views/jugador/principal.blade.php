@@ -49,7 +49,7 @@
             <a href="{{ route('jugador.principal') }}" class="list-group-item list-group-item-action active">Inicio</a>
             <a href="{{ route('jugador.perfil') }}" class="list-group-item list-group-item-action">Perfil</a>
             <a href="{{ route('jugador.entrenamientos.index') }}" class="list-group-item list-group-item-action">Entrenamientos</a>
-            <a href="torneos.html" class="list-group-item list-group-item-action">Torneos</a>
+            <a href="{{ route('jugador.torneos') }}" class="list-group-item list-group-item-action">Torneos</a>
             <a href="{{ route('escuelas.index') }}" class="list-group-item list-group-item-action action">Escuela</a>
           </div>
         </aside>
@@ -88,7 +88,7 @@
                 <div class="card-body text-center">
                   <h5 class="card-title">Torneos</h5>
                   <p>Torneos en los que participas.</p>
-                  <a href="torneos.html" class="btn btn-warning btn-sm">Ver Torneos</a>
+                  <a href="{{ route('jugador.torneos') }}" class="btn btn-warning btn-sm">Ver Torneos</a>
                 </div>
               </div>
             </div>

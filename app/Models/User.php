@@ -82,4 +82,9 @@ class User extends Authenticatable
         return $this->hasManyThrough(Categoria::class, Asignacion::class, 'user_id', 'id', 'id', 'categoria_id');
     }
 
+    public function torneos()
+    {
+        return $this->hasMany(Torneo::class, 'fk_admin_id');
+    }
+
 }

@@ -1,4 +1,4 @@
-{{-- resources/views/escuelas/index.blade.php (o el archivo que usas) --}}
+{{-- resources/views/escuelas/index.blade.php --}}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -12,13 +12,11 @@
 
 <body class="d-flex flex-column min-vh-100">
 
-  {{-- ---------- PARCHE: evita "Undefined variable $entrenamientos" ---------- --}}
+  {{-- ---------- Parche: evita "Undefined variable $entrenamientos" ---------- --}}
   @php
-    // Si la vista o algún include espera $entrenamientos, lo definimos vacío para no romper.
-    // Si prefieres que exista y sea null: $entrenamientos = $entrenamientos ?? null;
     $entrenamientos = $entrenamientos ?? collect();
   @endphp
-  {{-- ---------------------------------------------------------------------- --}}
+  {{-- ----------------------------------------------------------------------- --}}
 
   <!-- Navbar -->
   <div class="navbar navbar-expand bg-primary shadow mb-4">
@@ -41,30 +39,27 @@
     </div>
   </div>
 
-  <!-- Contenido -->
+  <!-- Contenedor principal -->
   <div class="container-fluid flex-grow-1">
     <div class="row">
+      
       <!-- Sidebar -->
       <div class="col-12 col-md-3 col-lg-2 sidebar mb-3">
-        <h5 class="mb-3 text-primary">Escuelas</h5>
+        <h5 class="mb-3 text-primary">Menú Administrador</h5>
         <div class="list-group">
           <a href="{{ route('admin.dash_admin') }}" class="list-group-item list-group-item-action">Inicio</a>
           <a href="{{ route('escuelas.index') }}" class="list-group-item list-group-item-action active">Escuelas</a>
-
-          {{-- Enlace único a Entrenamientos (apunta al index del entrenador) --}}
-          <a href="{{ route('entrenador.entrenamientos.index') }}" class="list-group-item list-group-item-action">Entrenamientos</a>
-
-          <a href="Torneos.html" class="list-group-item list-group-item-action">Torneos</a>
-          <a href="{{ route('categorias.index') }}" class="list-group-item list-group-item-action">
-            Categorias
-          </a>
+          <a href="{{ route('admin.entrenamientos.index') }}" class="list-group-item list-group-item-action">Entrenamientos</a>
+          <a href="{{ route('torneos.index') }}" class="list-group-item list-group-item-action">Torneos</a>
+          <a href="{{ route('categorias.index') }}" class="list-group-item list-group-item-action">Categorias</a>
           <a href="{{ route('canchas.index') }}" class="list-group-item list-group-item-action">Canchas</a>
           <a href="{{ route('usuarios.index') }}" class="list-group-item list-group-item-action">Usuarios</a>
         </div>
       </div>
 
-      <!-- Sección principal -->
+      <!-- Contenido principal -->
       <div class="col-12 col-md-9 col-lg-10 p-4">
+        
         <div class="d-flex flex-column flex-md-row align-items-center justify-content-md-end mb-3">
           <form class="d-flex flex-column flex-sm-row me-md-3 mt-3 mt-md-0"
                 action="{{ route('escuelas.index') }}" method="GET" role="search">
@@ -75,11 +70,11 @@
             </div>
 
             @if(request()->filled('q'))
-                <a href="{{ route('escuelas.index') }}" class="btn btn-primary ms-2">Limpiar</a>
+              <a href="{{ route('escuelas.index') }}" class="btn btn-primary ms-2">Limpiar</a>
             @endif
             <a href="{{ route('escuelas.create') }}"
                class="btn btn-warning flex-shrink-0 d-flex align-items-left justify-content-center ms-2">
-                Registrar Escuela
+              Registrar Escuela
             </a>
           </form>
         </div>
@@ -115,6 +110,7 @@
             </div>
           @endforeach
         </div>
+
       </div>
     </div>
   </div>

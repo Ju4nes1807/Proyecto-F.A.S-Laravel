@@ -25,4 +25,9 @@ class Categoria extends Model
         return $this->hasMany(Asignacion::class);
     }
 
+    public function torneos()
+    {
+        return $this->hasMany(Torneo::class, 'fk_categoria_id');
+    }
+
 }
